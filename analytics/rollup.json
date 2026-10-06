@@ -1,15 +1,19 @@
 {
-  "generated": "2026-10-06T12:52:16Z",
-  "records": 12,
-  "sessions": 7,
+  "generated": "2026-10-06T18:45:35Z",
+  "records": 34,
+  "sessions": 15,
   "first_record": 1791285768508,
-  "last_record": 1791291002087,
+  "last_record": 1791304000957,
   "events": {
-    "pageview": 7,
-    "time_on_page": 5
+    "pageview": 15,
+    "time_on_page": 11,
+    "scroll_25": 3,
+    "scroll_50": 2,
+    "scroll_75": 2,
+    "scroll_100": 1
   },
   "funnel": {
-    "view": 7,
+    "view": 15,
     "cta": 0,
     "start": 0,
     "submit": 0,
@@ -23,35 +27,52 @@
   "days": [
     {
       "date": "2026-10-06",
-      "pageviews": 7,
+      "pageviews": 14,
       "cta_clicks": 0,
       "form_starts": 0,
       "leads": 0,
-      "sessions": 7,
-      "events": 12
+      "sessions": 14,
+      "events": 33
+    },
+    {
+      "date": "unknown",
+      "pageviews": 1,
+      "cta_clicks": 0,
+      "form_starts": 0,
+      "leads": 0,
+      "sessions": 1,
+      "events": 1
     }
   ],
   "pages": [
     {
-      "path": "/index.html",
-      "count": 4
+      "path": "/AIH/",
+      "count": 7
     },
     {
-      "path": "/AIH/",
-      "count": 3
+      "path": "/index.html",
+      "count": 5
+    },
+    {
+      "path": "/C:/Users/jonny/OneDrive/Desktop/AIH/index.html",
+      "count": 2
+    },
+    {
+      "path": "/probe",
+      "count": 1
     }
   ],
   "ctas": [],
   "referrers": [
     {
       "host": "(direct)",
-      "count": 7
+      "count": 15
     }
   ],
   "viewports": [
     {
       "vp": "desktop",
-      "count": 7
+      "count": 14
     }
   ],
   "outbound": []
