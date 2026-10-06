@@ -1,19 +1,19 @@
 {
-  "generated": "2026-10-06T18:45:35Z",
-  "records": 34,
-  "sessions": 15,
+  "generated": "2026-10-06T22:52:39Z",
+  "records": 54,
+  "sessions": 25,
   "first_record": 1791285768508,
-  "last_record": 1791304000957,
+  "last_record": 1791317063913,
   "events": {
-    "pageview": 15,
-    "time_on_page": 11,
+    "pageview": 25,
+    "time_on_page": 21,
     "scroll_25": 3,
     "scroll_50": 2,
     "scroll_75": 2,
     "scroll_100": 1
   },
   "funnel": {
-    "view": 15,
+    "view": 25,
     "cta": 0,
     "start": 0,
     "submit": 0,
@@ -27,12 +27,12 @@
   "days": [
     {
       "date": "2026-10-06",
-      "pageviews": 14,
+      "pageviews": 24,
       "cta_clicks": 0,
       "form_starts": 0,
       "leads": 0,
-      "sessions": 14,
-      "events": 33
+      "sessions": 24,
+      "events": 53
     },
     {
       "date": "unknown",
@@ -45,6 +45,10 @@
     }
   ],
   "pages": [
+    {
+      "path": "/delivery.html",
+      "count": 10
+    },
     {
       "path": "/AIH/",
       "count": 7
@@ -66,13 +70,17 @@
   "referrers": [
     {
       "host": "(direct)",
-      "count": 15
+      "count": 25
     }
   ],
   "viewports": [
     {
       "vp": "desktop",
-      "count": 14
+      "count": 22
+    },
+    {
+      "vp": "phone",
+      "count": 2
     }
   ],
   "outbound": []

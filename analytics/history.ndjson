@@ -32,3 +32,23 @@
 {"ev":"time_on_page","n":3,"path":"/AIH/","props":{"bucket":"30-60","seconds":31},"ref":"","sid":"s_wsdaoz4oh9","ts":1791303998731,"vp":"desktop"}
 {"ev":"time_on_page","n":5,"path":"/AIH/","props":{"bucket":"30-60","seconds":33},"ref":"","sid":"s_t4q3jjn467","ts":1791303999916,"vp":"desktop"}
 {"ev":"time_on_page","n":6,"path":"/AIH/","props":{"bucket":"30-60","seconds":34},"ref":"","sid":"s_bjaf4x69nh","ts":1791304000957,"vp":"desktop"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"desktop"},"ref":"","sid":"s_l32m93fu3f","ts":1791316040664,"vp":"desktop"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":3},"ref":"","sid":"s_l32m93fu3f","ts":1791316043625,"vp":"desktop"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"desktop"},"ref":"","sid":"s_7jhgk8p6oe","ts":1791316101586,"vp":"desktop"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":3},"ref":"","sid":"s_7jhgk8p6oe","ts":1791316104331,"vp":"desktop"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"desktop"},"ref":"","sid":"s_35d9ujo3kt","ts":1791316141107,"vp":"desktop"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":3},"ref":"","sid":"s_35d9ujo3kt","ts":1791316143838,"vp":"desktop"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"desktop"},"ref":"","sid":"s_sdvbk2q7ux","ts":1791316191958,"vp":"desktop"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":3},"ref":"","sid":"s_sdvbk2q7ux","ts":1791316194720,"vp":"desktop"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"desktop"},"ref":"","sid":"s_zzns03ziy3","ts":1791316221832,"vp":"desktop"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":3},"ref":"","sid":"s_zzns03ziy3","ts":1791316224402,"vp":"desktop"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"desktop"},"ref":"","sid":"s_a0fm8ql4th","ts":1791316300357,"vp":"desktop"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":3},"ref":"","sid":"s_a0fm8ql4th","ts":1791316303268,"vp":"desktop"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"phone"},"ref":"","sid":"s_qpezouw83h","ts":1791316324502,"vp":"phone"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":4},"ref":"","sid":"s_qpezouw83h","ts":1791316328948,"vp":"phone"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"desktop"},"ref":"","sid":"s_46klnjg0ji","ts":1791316868890,"vp":"desktop"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":3},"ref":"","sid":"s_46klnjg0ji","ts":1791316871422,"vp":"desktop"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"desktop"},"ref":"","sid":"s_4kq47wwp83","ts":1791317054281,"vp":"desktop"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":3},"ref":"","sid":"s_4kq47wwp83","ts":1791317056859,"vp":"desktop"}
+{"ev":"pageview","n":1,"path":"/delivery.html","props":{"title":"How AIH Delivers Automation Projects | AIH","vp":"phone"},"ref":"","sid":"s_iw2agyccz8","ts":1791317061235,"vp":"phone"}
+{"ev":"time_on_page","n":2,"path":"/delivery.html","props":{"bucket":"0-10","seconds":3},"ref":"","sid":"s_iw2agyccz8","ts":1791317063913,"vp":"phone"}
