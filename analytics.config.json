@@ -1,0 +1,7 @@
+{
+  "collector": "ntfy",
+  "topic": "aih-hub-analytics-yt5df3kul6ayk2",
+  "endpoint": "https://ntfy.sh/aih-hub-analytics-yt5df3kul6ayk2?title=AIH%20analytics",
+  "goatcounter": "",
+  "_note": "Free, account-free collector. ntfy.sh keeps messages ~12h, so the dashboard aggregates the trailing window; set 'goatcounter' to a GoatCounter code (or replace 'endpoint' with your own JSON POST URL) for permanent history. tools/build_seo.py injects these values into every page."
+}

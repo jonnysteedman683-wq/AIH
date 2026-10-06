@@ -6,7 +6,7 @@ robots.txt + sitemap.xml. Idempotent: the block lives between
 `<!-- SEO:AIH -->` and `<!-- /SEO:AIH -->` and is replaced on every run.
 Usage:  python tools/build_seo.py
 """
-import os, re, html
+import os, re, html, json
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = "https://jonnysteedman683-wq.github.io/AIH"
@@ -19,6 +19,18 @@ SKIP_DIRS = {".git", "tools"}
 # Operator-only pages: never injected with SEO/OG tags (they carry their own
 # noindex robots meta and must not be advertised as public content).
 SKIP_PAGES = {"dashboard.html"}
+
+
+def collector_config():
+    """Collector settings live in analytics.config.json so activation is a one-file edit."""
+    path = os.path.join(ROOT, "analytics.config.json")
+    try:
+        with open(path, encoding="utf-8") as fh:
+            cfg = json.load(fh)
+        return cfg if isinstance(cfg, dict) else {}
+    except Exception as exc:                      # missing/invalid config must not break the build
+        print("  ! analytics.config.json unreadable (%s) - shipping with no collector" % exc)
+        return {}
 
 
 def esc(s):
@@ -94,9 +106,18 @@ def page_meta(path):
 def analytics_block(rel, is_article):
     depth = rel.count("/")
     prefix = "../" * depth
+    cfg = collector_config()
+    attrs = ""
+    if cfg.get("endpoint"):
+        attrs += ' data-endpoint="%s"' % esc(cfg["endpoint"])
+    if cfg.get("collector"):
+        attrs += ' data-collector="%s"' % esc(cfg["collector"])
+    if cfg.get("topic"):
+        attrs += ' data-topic="%s"' % esc(cfg["topic"])
+    attrs += ' data-goatcounter="%s"' % esc(cfg.get("goatcounter", ""))
     return (
         ASTART + "\n"
-        '<script defer src="%sanalytics.js" data-goatcounter="" data-endpoint=""></script>\n' % prefix
+        '<script defer src="%sanalytics.js"%s></script>\n' % (prefix, attrs)
         + AEND + "\n"
     )
 

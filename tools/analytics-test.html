@@ -16,6 +16,12 @@
     <button type="submit" class="btn primary">Send it</button></form>
   <div id="ok" data-fs-success>ok</div>
   <div id="result">RUNNING</div>
+<script>
+  // Simulated collector so the transport path can be asserted without network.
+  window.AIH_ANALYTICS = { endpoint: "https://collector.test/collect", collector: "generic" };
+  window.__sent = [];
+  navigator.sendBeacon = function (url, blob) { window.__sent.push({ url: url, type: blob && blob.type, blob: blob }); return true; };
+</script>
 <script src="../analytics.js"></script>
 <script>
 var A = [], pass = 0, fail = 0;
@@ -33,7 +39,7 @@ function step(fn, ms) { return new Promise(function (r) { setTimeout(function ()
   // 1. pageview recorded on boot
   a("pageview_recorded", counts().pageview === 1, "pageview=" + counts().pageview);
   a("session_id", /^s_[a-z0-9]{10}$/.test(window.AIH.analytics.session), window.AIH.analytics.session);
-  a("no_collector_configured", window.AIH.analytics.config.endpoint === "", "endpoint='" + window.AIH.analytics.config.endpoint + "'");
+  a("collector_configured", window.AIH.analytics.config.endpoint === "https://collector.test/collect", "'" + window.AIH.analytics.config.endpoint + "'");
 
   // 2. CTA click tracked with a label
   document.getElementById('cta1').click();
@@ -83,6 +89,33 @@ function step(fn, ms) { return new Promise(function (r) { setTimeout(function ()
 
   // 9. counter: exactly one pageview even after many events
   a("pageview_not_inflated", counts().pageview === 1);
+
+  // 10. transport: beacons carry only unsent records (no duplicate sends)
+  a("beacon_sent_on_boot", window.__sent.length === 1, "beacons=" + window.__sent.length);
+  var first = await window.__sent[0].blob.text();
+  var firstObj = JSON.parse(first);
+  a("beacon_carries_pageview", firstObj.records.length === 1 && firstObj.records[0].ev === "pageview", "records=" + firstObj.records.length);
+  a("beacon_payload_labelled", firstObj.site === "aih" && !!firstObj.sent, JSON.stringify({ site: firstObj.site, collector: firstObj.collector }));
+  a("beacon_no_pii", first.indexOf("@") === -1 && first.indexOf("secret") === -1, "no email/subject leaked");
+
+  window.AIH.analytics.flush();                     // pending backlog + drained queue
+  await step(function(){}, 150);
+  var afterBacklog = window.__sent.length;
+  a("beacon_sends_pending_backlog", afterBacklog === 2, "beacons=" + afterBacklog);
+  var backlog = JSON.parse(await window.__sent[1].blob.text());
+  a("backlog_excludes_already_sent", backlog.records.every(function (r) { return r.ev !== "pageview"; }),
+    JSON.stringify(backlog.records.map(function (r) { return r.ev; })));
+  window.AIH.analytics.flush();
+  await step(function(){}, 150);
+  a("no_duplicate_resend", window.__sent.length === afterBacklog, "beacons still=" + window.__sent.length);
+  a("pending_emptied", window.AIH.analytics.pending().length === 0, "pending=" + window.AIH.analytics.pending().length);
+
+  window.AIH.analytics.track("probe_event", { k: "v" });
+  window.AIH.analytics.flush();
+  await step(function(){}, 150);
+  a("delta_only_after_new_event", window.__sent.length === afterBacklog + 1, "beacons=" + window.__sent.length);
+  var delta = JSON.parse(await window.__sent[window.__sent.length - 1].blob.text());
+  a("delta_is_single_record", delta.records.length === 1 && delta.records[0].ev === "probe_event", "records=" + delta.records.length);
 
   finish();
 })();

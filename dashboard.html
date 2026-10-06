@@ -80,6 +80,12 @@
     <p class="note" id="rawNote"></p>
   </div>
 
+  <div class="panel" id="livePanel">
+    <h2>Live collector <span id="liveSrc" class="note" style="font-weight:400"></span></h2>
+    <p class="note" id="liveNote" style="margin-bottom:14px">Connecting…</p>
+    <div id="liveBody"></div>
+  </div>
+
   <div class="panel">
     <h2>Turn on a real collector (optional, free)</h2>
     <p class="note">The site ships with no third-party analytics. Two supported paths:</p>
@@ -252,6 +258,124 @@
   };
 
   status(); render();
+
+  /* ---------- live collector (site-wide aggregates, no account required) ---------- */
+  var CFD = null;
+  function liveStatus() {
+    var src = document.getElementById("liveSrc");
+    var note = document.getElementById("liveNote");
+    var body = document.getElementById("liveBody");
+    if (!CFD || !CFD.topic) {
+      src.textContent = "";
+      note.textContent = "No collector configured — local buffer only (see below to switch one on).";
+      body.innerHTML = "";
+      return;
+    }
+    var kind = CFD.collector || "custom";
+    src.textContent = "· " + kind + " · " + CFD.topic;
+    var link = el("a", null, "open raw stream ↗");
+    link.href = "https://ntfy.sh/" + CFD.topic;
+    link.target = "_blank";
+    link.rel = "noopener";
+    note.innerHTML = "";
+    note.appendChild(document.createTextNode("Aggregating the trailing ntfy window (free tier keeps ~12h). Raw stream: "));
+    note.appendChild(link);
+  }
+
+  function pullLive() {
+    if (!CFD || !CFD.topic) return;
+    var body = document.getElementById("liveBody");
+    body.innerHTML = "";
+    body.appendChild(el("p", "empty", "Loading stream…"));
+    fetch("https://ntfy.sh/" + CFD.topic + "/json?poll=1&since=12h")
+      .then(function (r) { return r.text(); })
+      .then(function (txt) {
+        var recs = [], msgs = 0, bad = 0;
+        txt.split("\n").forEach(function (line) {
+          line = line.trim(); if (!line) return;
+          var m; try { m = JSON.parse(line); } catch (e) { bad++; return; }
+          if (m.event !== "message" || !m.message) return;
+          msgs++;
+          var p; try { p = JSON.parse(m.message); } catch (e) { bad++; return; }
+          (p.records || []).forEach(function (r) { if (r && r.ev) recs.push(r); });
+        });
+        renderLive(recs, msgs, bad);
+      })
+      .catch(function (e) {
+        body.innerHTML = "";
+        body.appendChild(el("p", "empty", "Collector unreachable: " + e.message + " (check the topic name in analytics.config.json)"));
+      });
+  }
+
+  function renderLive(recs, msgs, bad) {
+    var body = document.getElementById("liveBody");
+    body.innerHTML = "";
+    if (!recs.length) {
+      body.appendChild(el("p", "empty", "No events in the trailing window yet (" + msgs + " collector messages). Visit the site in any browser — events stream here within a minute."));
+      return;
+    }
+    var c = counts(recs);
+    var f = { view: c.pageview || 0, cta: c.cta_click || 0, start: c.form_start || 0, submit: c.form_submit || 0 };
+    var sessions = new Set(recs.map(function (r) { return r.sid; })).size;
+
+    var kpi = el("div", "kpi");
+    [["Site-wide pageviews", f.view], ["CTA clicks", f.cta], ["Leads", f.submit], ["Sessions", sessions]]
+      .forEach(function (p) {
+        var b = el("div", "panel"); b.style.margin = "0";
+        b.appendChild(el("b", null, String(p[1])));
+        b.appendChild(el("span", null, p[0]));
+        kpi.appendChild(b);
+      });
+    body.appendChild(kpi);
+
+    var fu = el("div", "funnel"); fu.style.marginTop = "18px";
+    var max = Math.max(f.view, 1);
+    FSTAGES.forEach(function (s) {
+      var v = f[s.k], st = el("div", "fstage");
+      st.appendChild(el("div", "lab", s.label));
+      var bar = el("div", "fbar" + (s.cls ? " " + s.cls : ""));
+      var inner = el("i"); inner.style.width = Math.max((v / max) * 100, v ? 3 : 0) + "%";
+      bar.appendChild(inner); st.appendChild(bar);
+      st.appendChild(el("div", "num", String(v)));
+      fu.appendChild(st);
+    });
+    body.appendChild(fu);
+    body.appendChild(el("p", "note", "End-to-end: " + pct(f.view, f.submit) + " of visits capture a lead · "
+      + recs.length + " events from " + msgs + " collector messages" + (bad ? " (" + bad + " unparsed)" : "") + "."));
+
+    function group(fn) {
+      var m = {};
+      recs.forEach(function (r) { var k = fn(r); if (k === undefined || k === null || k === "") return; m[k] = (m[k] || 0) + 1; });
+      return Object.keys(m).map(function (k) { return [k, m[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+    }
+    var grid = el("div", "grid g2"); grid.style.marginTop = "18px";
+    function mini(title, pairs) {
+      var box = el("div", "panel"); box.style.margin = "0";
+      box.appendChild(el("h2", null, title));
+      if (!pairs.length) box.appendChild(el("p", "empty", "—"));
+      else {
+        var t = el("table"), tb = el("tbody");
+        pairs.slice(0, 6).forEach(function (p) {
+          var tr = el("tr"); tr.appendChild(el("td", null, p[0])); tr.appendChild(el("td", "n", String(p[1]))); tb.appendChild(tr);
+        });
+        t.appendChild(tb); box.appendChild(t);
+      }
+      return box;
+    }
+    grid.appendChild(mini("Top pages", group(function (r) { return r.ev === "pageview" ? r.path : null; })));
+    grid.appendChild(mini("Top CTAs", group(function (r) { return r.ev === "cta_click" ? (r.props && r.props.label) : null; })));
+    grid.appendChild(mini("Event mix", group(function (r) { return r.ev; })));
+    grid.appendChild(mini("Referrers", group(function (r) { return r.ev === "pageview" ? (r.ref || "(direct)") : null; })));
+    body.appendChild(grid);
+  }
+
+  fetch("analytics.config.json").then(function (r) { return r.json(); }).then(function (c) {
+    CFD = c; liveStatus();
+    if (c && c.topic) pullLive();
+  }).catch(function () {
+    CFD = { topic: "" }; liveStatus();
+  });
+  setInterval(function () { if (CFD && CFD.topic) pullLive(); }, 120000);   // keep the live panel fresh
 })();
 </script>
 </body>

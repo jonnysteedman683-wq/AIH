@@ -41,16 +41,35 @@ nav link or `[data-aih-cta]`), `outbound`, `form_start`, `form_submit_attempt`,
 - Console API: `AIH.analytics.track() / funnel() / summary() / events() / csv()`.
 - Operator dashboard: `dashboard.html` (noindex) — funnel, KPIs, breakdowns, CSV export.
 - Records buffer in `localStorage` under `aih:analytics:v1`, so nothing is lost before
-  a collector exists. To turn on real, site-wide numbers, set `data-goatcounter="code"`
-  (free, hosted) or `data-endpoint="https://…"` (any JSON POST receiver) on the
-  analytics script tag — `tools/build_seo.py` writes that tag into every page.
+  a collector exists.
+
+### Collector: on by default, free, no account
+`analytics.config.json` is the single source of truth — `tools/build_seo.py` injects its
+values into every page. It ships pointed at **ntfy.sh** (free, no signup, no keys): every
+pageview, CTA click, form step and conversion is published to a private-ish topic that the
+dashboard reads back and aggregates site-wide — so numbers are real across all visitors,
+not just your browser. ntfy keeps ~12h, so the panel shows a trailing window.
+
+Records are sent **once**: each record carries `n`, a per-browser sequence, and only
+records above the sent watermark are transmitted (identity = `session + n`). The payload is
+`{site, sent, collector, records[]}`, sent with `sendBeacon` and a CORS-safelisted
+`text/plain` body so no preflight can silently drop it.
+
+Swap the collector by editing that one file:
+- **Permanent history, also free:** create a GoatCounter code and set `"goatcounter": "yourcode"`.
+- **Your own store:** set `"endpoint"` to any URL accepting a JSON POST (Cloudflare Worker,
+  Vercel function, Google Apps Script → Sheet) and `"collector": "generic"`.
+- **Off:** set `"endpoint": ""` → local buffer only.
 
 ## Tests
 ```bash
-bash tools/run-analytics-test.sh      # 18 assertions against analytics.js in headless Edge
+bash tools/run-analytics-test.sh      # 28 assertions against analytics.js in headless Edge
 bash tools/check-integration.sh       # confirms analytics boots on a real page
+bash tools/check-collector.sh         # end-to-end: real browser -> collector -> dashboard
 ```
-Both read the page over `file://` in headless Edge — no server needed.
+All three read the site over `file://` or a local HTTP server in headless Edge — no
+external test runner needed. `check-collector.sh` publishes genuine test pageviews to the
+live topic and asserts they come back parsed, PII-free and non-duplicated.
 
 ## Deployment
 Hosted free on **GitHub Pages**. Push to `main` → Pages auto-updates.

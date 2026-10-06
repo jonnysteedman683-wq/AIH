@@ -35,7 +35,7 @@
   }
 
   function pick() {            // merge without letting undefined clobber
-    var out = { endpoint: "", goatcounter: "", debug: false };
+    var out = { endpoint: "", goatcounter: "", debug: false, collector: "", topic: "" };
     var src = [window.AIH_ANALYTICS || {}, (script && script.dataset) || {}];
     for (var i = 0; i < src.length; i++) {
       for (var k in src[i]) {
@@ -70,7 +70,24 @@
   var buf = [];
   try { buf = JSON.parse(store(KEY) || "[]") || []; } catch (e) { buf = []; }
 
-  function persist() { store(KEY, JSON.stringify(buf.slice(-MAX))); }
+  // Send-once bookkeeping: every record gets a monotonic number, unique within
+  // this browser only (identity = session + n), and only records above `lastSent`
+  // are transmitted. Without this each flush would re-send the whole buffer and
+  // inflate every server-side count.
+  var SEQK = "aih:analytics:seq", SENTK = "aih:analytics:sent";
+  var seq = parseInt(store(SEQK) || "0", 10) || 0;
+  var lastSent = parseInt(store(SENTK) || "0", 10) || 0;
+
+  function persist() {
+    store(KEY, JSON.stringify(buf.slice(-MAX)));
+    store(SEQK, String(seq));
+    store(SENTK, String(lastSent));
+  }
+  function pending() {
+    var out = [];
+    for (var i = 0; i < buf.length; i++) if ((buf[i].n || 0) > lastSent) out.push(buf[i]);
+    return out;
+  }
   function refHost() { try { return document.referrer ? new URL(document.referrer).hostname : ""; } catch (e) { return ""; } }
   function vpClass() {
     var w = window.innerWidth || 0;
@@ -79,6 +96,7 @@
 
   function track(name, props) {
     var rec = {
+      n: ++seq,
       ev: String(name),
       ts: Date.now(),
       sid: SID,
@@ -91,6 +109,7 @@
     if (buf.length > MAX) buf = buf.slice(-MAX);
     persist();
     if (CFG.debug) renderPanel();
+    if (pending().length >= 25) flush();   // keep the stream flowing on long sessions
     return rec;
   }
 
@@ -102,22 +121,39 @@
   }
 
   /* ---------- transport ---------- */
-  var sending = false;
+  var sending = false, lastFlush = 0;
   function flush() {
-    if (!CFG.endpoint || sending || !buf.length) return false;
+    if (!CFG.endpoint || sending) return false;
+    var out = pending();
+    if (!out.length) return false;
+    out = out.slice(0, 80);                       // bounded payload per request
+    var maxSent = out[out.length - 1].n;
     sending = true;
-    var payload = JSON.stringify({ site: "aih", sent: new Date().toISOString(), records: buf.slice(-60) });
+    lastFlush = Date.now();
+    var payload = JSON.stringify({
+      site: "aih",
+      sent: new Date().toISOString(),
+      collector: CFG.collector || "generic",
+      records: out
+    });
     var ok = false;
+    // ntfy (and most simple receivers) take the raw body as the payload. A text/plain
+    // Blob is CORS-safelisted, so beacon/fetch skip the preflight that an
+    // application/json body would trigger — and a failed preflight silently loses events.
+    var ctype = (CFG.collector === "ntfy") ? "text/plain" : "application/json";
     try {
       if (navigator.sendBeacon) {
-        ok = navigator.sendBeacon(CFG.endpoint, new Blob([payload], { type: "application/json" }));
+        ok = navigator.sendBeacon(CFG.endpoint, new Blob([payload], { type: ctype }));
       }
       if (!ok && window.fetch) {
         fetch(CFG.endpoint, { method: "POST", body: payload, keepalive: true, mode: "cors",
-          headers: { "Content-Type": "application/json" } });
+          headers: { "Content-Type": ctype } });
         ok = true;
       }
-    } catch (e) { ok = false; } finally { sending = false; }
+    } catch (e) { ok = false; } finally {
+      sending = false;
+      if (ok) { lastSent = Math.max(lastSent, maxSent); persist(); if (CFG.debug) renderPanel(); }
+    }
     return ok;
   }
 
@@ -270,7 +306,12 @@
       return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(",");
     }).join("\n");
   }
-  function reset() { buf = []; persist(); if (CFG.debug) renderPanel(); }
+  function reset() {
+    buf = [];
+    lastSent = seq;          // nothing already-recorded should be re-sent
+    persist();
+    if (CFG.debug) renderPanel();
+  }
 
   /* ---------- debug panel (?aih-analytics=1) ---------- */
   // Panel content is rendered with innerHTML but every interpolated value is passed
@@ -315,7 +356,7 @@
   window.AIH = window.AIH || {};
   window.AIH.analytics = {
     track: track, funnel: funnel, summary: summary, events: events, csv: csv,
-    flush: flush, reset: reset, config: CFG, session: SID, dnt: DNT
+    flush: flush, reset: reset, pending: pending, config: CFG, session: SID, dnt: DNT
   };
 
   function boot() {
@@ -324,6 +365,7 @@
     clicks();
     form();
     timeOnPage();
+    setInterval(flush, 60000);        // steady drip for long sessions (no-op without a collector)
     if (debugOn()) renderPanel();
   }
   if (document.readyState === "loading") {
