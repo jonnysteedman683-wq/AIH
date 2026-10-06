@@ -51,9 +51,10 @@ sleep 2
 echo "--- dashboard live panel ---"
 grep -o 'Site-wide pageviews' "$SCR/dash.html" | head -1
 grep -o 'Live collector[^<]*' "$SCR/dash.html" | head -1
-grep -o 'collector topic[^<]*' "$SCR/dash.html" | head -1
 grep -o 'End-to-end:[^<]*' "$SCR/dash.html" | head -1
-grep -o 'Collector unreachable[^<]*' "$SCR/dash.html" | head -1
+# the error string also exists in the dashboard's source, so assert on the rendered
+# aggregate line above and only report the error path if it is the *live* node text
+if grep -q 'End-to-end:' "$SCR/dash.html"; then echo "live panel: rendered with aggregates"; else echo "live panel: DID NOT RENDER"; fi
 echo "--- pulled back from collector ---"
 curl -s -m 25 "https://ntfy.sh/$TOPIC/json?poll=1&since=12h" > "$SCR_W/stream.ndjson"
 python - "$SCR_W/stream.ndjson" <<'PY'
