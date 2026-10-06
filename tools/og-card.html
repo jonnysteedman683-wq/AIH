@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Public+Sans:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1200px;height:630px;overflow:hidden}
+  body{
+    font-family:'Public Sans',system-ui,sans-serif;
+    background:#0a0e14;color:#eef2f7;
+    position:relative;
+  }
+  /* neon hexagon field */
+  .canvas{position:absolute;inset:0}
+  .hex{position:absolute;border-radius:50%;filter:blur(46px);opacity:.55}
+  .h1{width:520px;height:520px;left:-120px;top:-140px;background:radial-gradient(circle,#ff2f5e 0%,rgba(255,47,94,0) 68%)}
+  .h2{width:560px;height:560px;right:-140px;top:-120px;background:radial-gradient(circle,#2f6bff 0%,rgba(47,107,255,0) 68%)}
+  .h3{width:600px;height:600px;left:340px;bottom:-300px;background:radial-gradient(circle,#31ff8f 0%,rgba(49,255,143,0) 70%)}
+  .glass{position:absolute;inset:0;backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);background:rgba(10,14,20,.62)}
+  .grain{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:60px 60px}
+  .frame{position:absolute;inset:34px;border:1px solid rgba(240,166,60,.35);border-radius:10px}
+  .inner{position:absolute;inset:34px;padding:44px 52px;display:flex;flex-direction:column;justify-content:space-between}
+  .top{display:flex;align-items:center;justify-content:space-between}
+  .brand{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:700;font-size:34px;letter-spacing:.5px}
+  .brand .mark{color:#f0a63c}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:#f0a63c;display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:'';width:26px;height:1px;background:#f0a63c}
+  h1{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:700;font-size:82px;line-height:1.02;letter-spacing:-2px;margin:26px 0 18px}
+  h1 .accent{color:#f0a63c}
+  .tag{font-size:23px;color:#9aa7ba;max-width:820px;line-height:1.45}
+  .bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+  .chips{display:flex;gap:12px;flex-wrap:wrap}
+  .chip{font-family:'IBM Plex Mono',monospace;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid #232c3b;background:rgba(22,29,41,.9);color:#9aa7ba}
+  .chip b{color:#3ecf8e;font-weight:500}
+  .url{font-family:'IBM Plex Mono',monospace;font-size:17px;color:#5b8def}
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="hex h1"></div><div class="hex h2"></div><div class="hex h3"></div>
+  </div>
+  <div class="glass"></div>
+  <div class="grain"></div>
+  <div class="frame"></div>
+  <div class="inner">
+    <div>
+      <div class="top">
+        <div class="brand"><span class="mark">AI</span>H</div>
+        <div class="eyebrow">One-Stop AI Hub</div>
+      </div>
+      <h1>Everything AI.<br/><span class="accent">One place.</span></h1>
+      <p class="tag">Models, autonomous agents, tools, news &amp; services — the single destination for artificial intelligence.</p>
+    </div>
+    <div class="bottom">
+      <div class="chips">
+        <div class="chip"><b>✓</b> Agents</div>
+        <div class="chip"><b>✓</b> Tools</div>
+        <div class="chip"><b>✓</b> News</div>
+        <div class="chip"><b>✓</b> Services</div>
+      </div>
+      <div class="url">jonnysteedman683-wq.github.io/AIH</div>
+    </div>
+  </div>
+</body>
+</html>
