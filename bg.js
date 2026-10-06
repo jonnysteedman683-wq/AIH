@@ -18,10 +18,10 @@
 
   // Three hexagons: red, blue, green. Each drifts slowly and pulses.
   var hexes = [
-    { x:0.22, y:0.30, r:70,  hue:'255,80,80',   speed:0.9,  phase:0 },
-    { x:0.78, y:0.28, r:64,  hue:'80,140,255',  speed:1.1,  phase:2.1 },
-    { x:0.50, y:0.72, r:80,  hue:'80,220,140',  speed:0.7,  phase:4.2 }
-  ];
+      { x:0.22, y:0.30, r:210, hue:'255,80,80',   speed:0.9,  phase:0 },
+      { x:0.78, y:0.28, r:192, hue:'80,140,255',  speed:1.1,  phase:2.1 },
+      { x:0.50, y:0.72, r:240, hue:'80,220,140',  speed:0.7,  phase:4.2 }
+    ];
   var t = 0;
 
   function hexPath(x, y, r){
