@@ -16,6 +16,9 @@ START, END = "<!-- SEO:AIH -->", "<!-- /SEO:AIH -->"
 ASTART, AEND = "<!-- ANALYTICS:AIH -->", "<!-- /ANALYTICS:AIH -->"
 
 SKIP_DIRS = {".git", "tools"}
+# Operator-only pages: never injected with SEO/OG tags (they carry their own
+# noindex robots meta and must not be advertised as public content).
+SKIP_PAGES = {"dashboard.html"}
 
 
 def esc(s):
@@ -108,6 +111,8 @@ def main():
     changed = []
     for p in sorted(pages):
         rel = os.path.relpath(p, ROOT).replace(os.sep, "/")
+        if rel in SKIP_PAGES:
+            continue
         src, title, desc = page_meta(p)
         is_article = rel.startswith("blog/post-")
         block = meta_block(rel, title, desc, is_article)
