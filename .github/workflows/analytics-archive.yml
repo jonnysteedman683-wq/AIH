@@ -1,0 +1,57 @@
+name: analytics-archive
+
+# The free collector (ntfy.sh) only retains ~12h. This job harvests the trailing
+# window into permanent, versioned history in the repo — no account, no billing.
+# Files are rewritten only when records are actually new, so a quiet site
+# produces zero commits and zero Pages churn.
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"   # every 20 minutes (UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: analytics-archive
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Harvest collector stream into analytics/
+        run: python tools/archive_collector.py
+
+      - name: Commit history when it changed
+        run: |
+          set -e
+          git config user.name  "aih-analytics-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain analytics)" ]; then
+            git add analytics
+            git commit -m "chore(analytics): archive collector stream $(date -u +%FT%TZ)"
+            git push
+            echo "committed new analytics records"
+          else
+            echo "no new records - nothing to commit"
+          fi
+
+      - name: Summary
+        run: |
+          python - <<'PY'
+          import json, os
+          p = "analytics/rollup.json"
+          if not os.path.exists(p):
+              print("no rollup yet"); raise SystemExit(0)
+          r = json.load(open(p))
+          print("archived records:", r["records"], "sessions:", r["sessions"])
+          print("funnel:", r["funnel"])
+          PY

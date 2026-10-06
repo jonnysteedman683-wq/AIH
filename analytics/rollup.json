@@ -1,0 +1,58 @@
+{
+  "generated": "2026-10-06T12:45:22Z",
+  "records": 9,
+  "sessions": 5,
+  "first_record": 1791285768508,
+  "last_record": 1791286255813,
+  "events": {
+    "pageview": 5,
+    "time_on_page": 4
+  },
+  "funnel": {
+    "view": 5,
+    "cta": 0,
+    "start": 0,
+    "submit": 0,
+    "rates": {
+      "view_to_cta": 0.0,
+      "cta_to_start": 0,
+      "start_to_submit": 0,
+      "view_to_submit": 0.0
+    }
+  },
+  "days": [
+    {
+      "date": "2026-10-06",
+      "pageviews": 5,
+      "cta_clicks": 0,
+      "form_starts": 0,
+      "leads": 0,
+      "sessions": 5,
+      "events": 9
+    }
+  ],
+  "pages": [
+    {
+      "path": "/index.html",
+      "count": 4
+    },
+    {
+      "path": "/AIH/",
+      "count": 1
+    }
+  ],
+  "ctas": [],
+  "referrers": [
+    {
+      "host": "(direct)",
+      "count": 5
+    }
+  ],
+  "viewports": [
+    {
+      "vp": "desktop",
+      "count": 5
+    }
+  ],
+  "outbound": []
+}

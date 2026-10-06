@@ -80,6 +80,12 @@
     <p class="note" id="rawNote"></p>
   </div>
 
+  <div class="panel" id="archivePanel">
+    <h2>All-time history <span id="archSrc" class="note" style="font-weight:400"></span></h2>
+    <p class="note" id="archNote" style="margin-bottom:14px">Loading…</p>
+    <div id="archBody"></div>
+  </div>
+
   <div class="panel" id="livePanel">
     <h2>Live collector <span id="liveSrc" class="note" style="font-weight:400"></span></h2>
     <p class="note" id="liveNote" style="margin-bottom:14px">Connecting…</p>
@@ -376,6 +382,59 @@
     CFD = { topic: "" }; liveStatus();
   });
   setInterval(function () { if (CFD && CFD.topic) pullLive(); }, 120000);   // keep the live panel fresh
+
+  /* ---------- all-time history (harvested into the repo by the scheduled Action) ---------- */
+  function pullArchive() {
+    var body = document.getElementById("archBody");
+    var note = document.getElementById("archNote");
+    var src = document.getElementById("archSrc");
+    fetch("analytics/rollup.json", { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (r) {
+        body.innerHTML = "";
+        src.textContent = "· analytics/rollup.json";
+        var f = r.funnel || {};
+        note.textContent = r.records + " records · " + r.sessions + " sessions · harvested "
+          + (r.generated || "?").replace("T", " ").replace("Z", " UTC")
+          + (r.first_record ? " · since " + new Date(r.first_record).toISOString().slice(0, 10) : "");
+
+        var kpi = el("div", "kpi");
+        [["All-time pageviews", f.view || 0], ["CTA clicks", f.cta || 0],
+         ["Leads captured", f.submit || 0], ["View → lead", ((f.rates && f.rates.view_to_submit) || 0) + "%"]]
+          .forEach(function (p) {
+            var b = el("div", "panel"); b.style.margin = "0";
+            b.appendChild(el("b", null, String(p[1])));
+            b.appendChild(el("span", null, p[0]));
+            kpi.appendChild(b);
+          });
+        body.appendChild(kpi);
+
+        var days = (r.days || []).slice().reverse();
+        var t = el("table"); t.style.marginTop = "18px";
+        var thead = el("thead"), hr = el("tr");
+        ["UTC day", "Views", "CTA", "Form starts", "Leads", "Sessions"].forEach(function (h) { hr.appendChild(el("th", null, h)); });
+        thead.appendChild(hr); t.appendChild(thead);
+        var tb = el("tbody");
+        days.slice(0, 30).forEach(function (d) {
+          var tr = el("tr");
+          [d.date, d.pageviews, d.cta_clicks, d.form_starts, d.leads, d.sessions].forEach(function (v, i) {
+            tr.appendChild(el("td", i ? "n" : null, String(v)));
+          });
+          tb.appendChild(tr);
+        });
+        t.appendChild(tb);
+        body.appendChild(t);
+        body.appendChild(el("p", "note", "Permanent, versioned history: the analytics-archive Action harvests the free "
+          + "collector's 12h window every 20 minutes and commits new records. Nominal volume produces no commits."));
+      })
+      .catch(function (e) {
+        body.innerHTML = "";
+        src.textContent = "";
+        note.textContent = "No archive yet (" + e.message + "). The scheduled action writes analytics/rollup.json "
+          + "on its first run — or run it by hand: `python tools/archive_collector.py`.";
+      });
+  }
+  pullArchive();
 })();
 </script>
 </body>

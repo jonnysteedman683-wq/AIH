@@ -61,6 +61,21 @@ Swap the collector by editing that one file:
   Vercel function, Google Apps Script → Sheet) and `"collector": "generic"`.
 - **Off:** set `"endpoint": ""` → local buffer only.
 
+### Permanent history, no signup (analytics-archive Action)
+The free collector retains ~12h, so `.github/workflows/analytics-archive.yml` harvests the
+trailing window every 20 minutes into the repo itself:
+
+```bash
+python tools/archive_collector.py            # harvest now (same code the Action runs)
+python tools/archive_collector.py --check    # report only, write nothing
+```
+
+It appends new records to `analytics/history.ndjson` (deduped on `session + n`) and rebuilds
+`analytics/rollup.json` — all-time funnel, per-UTC-day rows, top pages/CTAs/referrers. Files
+are rewritten **only when records are new**, so a quiet site produces no commits and no Pages
+churn. The dashboard's "All-time history" panel reads that rollup, so history survives the
+collector's retention window. Public repo ⇒ Actions minutes are free.
+
 ## Tests
 ```bash
 bash tools/run-analytics-test.sh      # 28 assertions against analytics.js in headless Edge
