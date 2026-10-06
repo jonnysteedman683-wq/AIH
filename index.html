@@ -150,12 +150,15 @@
     <h2>Get Started</h2>
     <p class="sub">Tell us what you need, or drop your email to join the AIH newsletter and get the latest tools, agents, and news.</p>
     <form id="leadForm">
-      <input type="text" name="name" placeholder="Your name" />
-      <input type="email" name="email" placeholder="Your email" required />
-      <textarea name="message" placeholder="What can we help you automate or build?"></textarea>
-      <button type="submit" class="btn primary">Send it</button>
+      <input type="text" name="name" placeholder="Your name" data-fs-field />
+      <input type="email" name="email" placeholder="Your email" required data-fs-field />
+      <textarea name="message" placeholder="What can we help you automate or build?" data-fs-field></textarea>
+      <span data-fs-error="email" style="color:#ff6b7a;font-size:.85rem"></span>
+      <span data-fs-error="message" style="color:#ff6b7a;font-size:.85rem"></span>
+      <button type="submit" class="btn primary" data-fs-submit-btn>Send it</button>
     </form>
-    <div id="note" style="display:none">✅ Thanks! We'll be in touch. (You're on the list.)</div>
+    <div data-fs-success style="color:#38d9a9;font-weight:600;margin-top:14px">✅ Thanks! We'll be in touch. (You're on the list.)</div>
+    <div data-fs-error style="color:#ff6b7a;font-size:.9rem;margin-top:10px">Something went wrong — please try again.</div>
   </div>
 </section>
 
@@ -168,23 +171,10 @@
 </footer>
 
 <script>
-  // Client-side form handler. Out of the box it just confirms locally.
-  // To capture leads for real, point formspreeUrl at a free Formspree/FormSubmit endpoint.
-  var formspreeUrl = ""; // e.g. "https://formspree.io/f/yourendpoint"
-  var form = document.getElementById("leadForm");
-  var note = document.getElementById("note");
-  form.addEventListener("submit", function(e){
-    e.preventDefault();
-    if(formspreeUrl){
-      var data = new FormData(form);
-      fetch(formspreeUrl, {method:"POST", body:data, headers:{'Accept':'application/json'}})
-        .then(function(r){ if(!r.ok) throw new Error("bad"); note.style.display="block"; form.reset(); })
-        .catch(function(){ note.style.display="block"; note.textContent="Submitted. (Form backend not configured — message logged locally.)"; });
-    } else {
-      note.style.display="block";
-      note.textContent = "✅ Thanks! Form is live. Connect a free Formspree endpoint (see script) to capture leads by email.";
-    }
-  });
+  // Formspree Ajax integration for the AIH lead form (Vanilla JS guide).
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#leadForm', formId: 'meaeoeav' });
 </script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer crossorigin="anonymous"></script>
 </body>
 </html>
