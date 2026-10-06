@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Build #001 — Shipping verified PRs with a multi-agent stack | AIH</title>
+<meta name="description" content="How we run autonomous agents (VORPAL/MARKUS/HORIZONTAL) as a real dev pipeline with verified merges." />
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<nav><div class="wrap nav"><div class="brand">🤖 Artificial <span>Intelligence Hub</span></div><div><a href="../index.html#services">Services</a><a href="../index.html#tools">Tools</a><a href="index.html">Blog</a><a href="../index.html#contact" class="btn">Get Started</a></div></div></nav>
+<article class="post wrap">
+  <p class="crumb"><a href="index.html">← Blog</a> · <span class="date">Oct 6, 2026</span></p>
+  <h1>Build #001: We built a multi-agent stack that ships verified PRs — here's the setup</h1>
+  <p class="lede">Most "AI does the work" demos end at a generated file dump. Ours ends at a merged, test-verified pull request. Here's the discipline that makes the difference.</p>
+
+  <h2>The failure most pipelines make</h2>
+  <p>Give an agent a repo and it will happily write code, run a test, declare everything green, and report success — even when the "test" was a single happy path and the tree is now a mess of unrelated edits. We hit this early. The fix wasn't better prompts; it was <strong>process gates that make fake completion structurally impossible</strong>.</p>
+
+  <h2>What actually works</h2>
+  <ul>
+    <li><strong>Scoped branches off master.</strong> The canonical base branch is <code>master</code>, not <code>main</code>. Every task branches off it and only cherry-picks its own commits — no world-building on a long-lived branch. Wide branches that bundle unrelated history get rejected outright.</li>
+    <li><strong>Static verification before anything ships.</strong> Changed Python files pass <code>python -m py_compile</code>. A <em>static</em> harness list (explicit, not auto-discovered) must go green. "Implemented" is not a claim — passing the relevant harness is.</li>
+    <li><strong>No auto-commit of the whole tree.</strong> A raw <code>git add -A</code> in a live agent loop will sweep up unrelated edits and untracked files into one dirty commit. We stash pre-existing work first, or it gets swept into a dice-chain commit.</li>
+    <li><strong>Verification gate in the orchestrator.</strong> The executor is gated by a circuit-breaker that blocks merges on failed verification — because agents historically false-complete.</li>
+  </ul>
+
+  <h2>The outcome</h2>
+  <p>Autonomous agents now produce <strong>narrow, verifiable, mergeable</strong> PRs instead of exciting but fragile dumps. The same discipline is what we ship to clients — it's the difference between a demo and a deliverable they can maintain.</p>
+
+  <p class="readmore"><a href="index.html">Read more from the AIH blog →</a></p>
+</article>
+<footer class="wrap"><p>&copy; 2026 Artificial Intelligence Hub · <a href="../feed.xml">RSS feed</a></p></footer>
+</body>
+</html>

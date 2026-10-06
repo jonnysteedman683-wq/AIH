@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Artificial Intelligence Hub — Blog</title>
+  <link>https://jonnysteedman683-wq.github.io/AIH/blog/</link>
+  <description>Build-in-public updates, AI field notes, and grounded takes on autonomous agents from the Artificial Intelligence Hub.</description>
+  <language>en</language>
+  <atom:link href="https://jonnysteedman683-wq.github.io/AIH/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>Build #001: We built a multi-agent stack that ships verified PRs</title>
+    <link>https://jonnysteedman683-wq.github.io/AIH/blog/post-1.html</link>
+    <guid>https://jonnysteedman683-wq.github.io/AIH/blog/post-1.html</guid>
+    <pubDate>Tue, 06 Oct 2026 00:00:00 +0000</pubDate>
+    <description>Scoped branches, static verification gates, and the discipline that makes fake completion structurally impossible.</description>
+  </item>
+  <item>
+    <title>Where AI automation actually pays for small business</title>
+    <link>https://jonnysteedman683-wq.github.io/AIH/blog/post-2.html</link>
+    <guid>https://jonnysteedman683-wq.github.io/AIH/blog/post-2.html</guid>
+    <pubDate>Tue, 06 Oct 2026 00:00:00 +0000</pubDate>
+    <description>Lead-gen, invoice chasing, and appointment follow-up — the workflows with real returns and the niches with budgets.</description>
+  </item>
+  <item>
+    <title>10 agent tools that survive real use</title>
+    <link>https://jonnysteedman683-wq.github.io/AIH/blog/post-3.html</link>
+    <guid>https://jonnysteedman683-wq.github.io/AIH/blog/post-3.html</guid>
+    <pubDate>Tue, 06 Oct 2026 00:00:00 +0000</pubDate>
+    <description>A curated, opinionated list from daily agent operation — and the ones that quietly fell over.</description>
+  </item>
+</channel>
+</rss>

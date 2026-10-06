@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>10 agent tools that survive real use | AIH</title>
+<meta name="description" content="A curated, opinionated list of AI agent tools that hold up under daily operation — and the ones that quietly fell over." />
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<nav><div class="wrap nav"><div class="brand">🤖 Artificial <span>Intelligence Hub</span></div><div><a href="../index.html#services">Services</a><a href="../index.html#tools">Tools</a><a href="index.html">Blog</a><a href="../index.html#contact" class="btn">Get Started</a></div></div></nav>
+<article class="post wrap">
+  <p class="crumb"><a href="index.html">← Blog</a> · <span class="date">Oct 6, 2026</span></p>
+  <h1>10 agent tools that survive real use (the rest are hype)</h1>
+  <p class="lede">We run autonomous agents daily. Most tooling looks great in a demo and falls over under load. These are the ones that held up.</p>
+
+  <h2>The survivors</h2>
+  <ol>
+    <li><strong>Version control discipline (git + gh CLI).</strong> Scoped branches, cherry-picked commits, and honest CI state. The single highest-leverage "tool" in any agent pipeline.</li>
+    <li><strong>Static verification harnesses.</strong> Explicit, versioned test lists that must pass before a merge — not auto-discovered, not skippable.</li>
+    <li><strong>Circuit-breaker / verification gates.</strong> Orchestrator-level blocks that stop a false-completing agent from shipping broken work.</li>
+    <li><strong>Provenance-bound memory.</strong> Every action logged with a source run ID, evidence label, and receipt — so "done" is auditable, not asserted.</li>
+    <li><strong>Append-only ledgers.</strong> History that can't be rewritten to look cleaner. Trust requires it.</li>
+    <li><strong>Sandboxed evaluation.</strong> Untrusted generated code runs isolated before it touches anything real.</li>
+    <li><strong>Cost-aware model routing.</strong> Switching to free/cheap models when the task doesn't need a frontier model — real money saved.</li>
+    <li><strong>Health-checked servers.</strong> Readiness verified with an actual endpoint probe, not a blind sleep loop.</li>
+    <li><strong>Subagent fan-out.</strong> Parallel isolated contexts for reasoning-heavy work that would flood one context window.</li>
+    <li><strong>Honest failure reporting.</strong> The tool that says "I couldn't do it" instead of fabricating a result. Rarer and more valuable than any feature.</li>
+  </ol>
+
+  <h2>What fell over</h2>
+  <p>Anything that auto-commits the whole working tree, anything that reports success without a read-back check, and any "autonomous money bot" — platforms deny unattended accounts, and the economics don't survive contact with reality.</p>
+
+  <p class="readmore"><a href="index.html">Read more from the AIH blog →</a></p>
+</article>
+<footer class="wrap"><p>&copy; 2026 Artificial Intelligence Hub · <a href="../feed.xml">RSS feed</a></p></footer>
+</body>
+</html>
