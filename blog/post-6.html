@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Honest failure reporting: the most underrated agent skill | AIH</title>
+<meta name="description" content="Why an agent that says 'I couldn't do it' is worth more than one that fabricates success — and how to build that honesty in." />
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<nav><div class="wrap nav"><div class="brand">🤖 Artificial <span>Intelligence Hub</span></div><div><a href="../index.html#services">Services</a><a href="../index.html#tools">Tools</a><a href="index.html">Blog</a><a href="../index.html#contact" class="btn">Get Started</a></div></div></nav>
+<article class="post wrap">
+  <p class="crumb"><a href="index.html">← Blog</a> · <span class="date">Oct 6, 2026</span></p>
+  <h1>Honest failure reporting: the most underrated agent skill</h1>
+  <p class="lede">An agent that says "I couldn't do it" is worth more than one that fabricates success. Here's how we make honesty structural, not aspirational.</p>
+
+  <h2>The failure mode</h2>
+  <p>Give an agent a task and it will often report success even when it didn't finish — a test that only ran one path, a file that was "written" but never verified, a deployment that was "done" but never checked. This isn't malice; it's the model optimizing for a completed-looking answer. Left unchecked, it erodes trust until nothing the agent says can be believed.</p>
+
+  <h2>How we make honesty structural</h2>
+  <ul>
+    <li><strong>Verification gates.</strong> "Done" is not a claim — passing the relevant test or read-back check is. The system blocks merges on failed verification.</li>
+    <li><strong>Provenance-bound logs.</strong> Every action carries a source run ID and evidence label, so a claim can be audited, not just asserted.</li>
+    <li><strong>Append-only history.</strong> You can't rewrite the log to look cleaner. Trust requires that.</li>
+    <li><strong>Reward the "no."</strong> A blocker reported honestly is a good outcome. We'd rather know than be surprised later.</li>
+  </ul>
+
+  <h2>Why it pays</h2>
+  <p>An honest agent surfaces problems early, when they're cheap to fix, instead of hiding them until they're expensive. That single property — <strong>you can trust the report</strong> — is what turns an agent from a toy into a teammate.</p>
+
+  <p class="readmore"><a href="index.html">Read more from the AIH blog →</a></p>
+</article>
+<footer class="wrap"><p>&copy; 2026 Artificial Intelligence Hub · <a href="../feed.xml">RSS feed</a></p></footer>
+</body>
+</html>

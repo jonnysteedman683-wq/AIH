@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sandboxed evaluation: running untrusted code safely | AIH</title>
+<meta name="description" content="Why generated code must run isolated before it touches anything real — and the sandbox discipline that keeps an agent fleet safe." />
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<nav><div class="wrap nav"><div class="brand">🤖 Artificial <span>Intelligence Hub</span></div><div><a href="../index.html#services">Services</a><a href="../index.html#tools">Tools</a><a href="index.html">Blog</a><a href="../index.html#contact" class="btn">Get Started</a></div></div></nav>
+<article class="post wrap">
+  <p class="crumb"><a href="index.html">← Blog</a> · <span class="date">Oct 6, 2026</span></p>
+  <h1>Sandboxed evaluation: running untrusted code safely</h1>
+  <p class="lede">An agent that writes code is an agent that writes code you haven't reviewed yet. Treat every generated program as untrusted until it's proven safe in a sandbox.</p>
+
+  <h2>The principle</h2>
+  <p>When an agent generates code, that code is <strong>untrusted</strong> — it could have a bug, a side effect, or worse. Running it directly against your real systems is how a small mistake becomes a big incident. The fix is a hard rule: <strong>generated code runs isolated before it touches anything real.</strong></p>
+
+  <h2>The sandbox discipline</h2>
+  <ul>
+    <li><strong>Isolated evaluation.</strong> Generated programs run in a sandboxed subprocess with no access to production state, secrets, or the network.</li>
+    <li><strong>Path validation.</strong> Every path is checked against the intended root; traversal and unexpected symlinks are rejected.</li>
+    <li><strong>No secrets in scope.</strong> Credentials never enter the sandbox, the logs, or the command line.</li>
+    <li><strong>Review before release.</strong> Passing the sandbox is necessary but not sufficient — a human (or a second agent) reviews before anything ships.</li>
+  </ul>
+
+  <h2>Why it matters</h2>
+  <p>Sandboxing is what lets you say yes to agent-generated work without holding your breath. It's the difference between <strong>letting an agent experiment</strong> and <strong>letting an agent break things.</strong> The former is how you get compounding value; the latter is how you get incidents.</p>
+
+  <p class="readmore"><a href="index.html">Read more from the AIH blog →</a></p>
+</article>
+<footer class="wrap"><p>&copy; 2026 Artificial Intelligence Hub · <a href="../feed.xml">RSS feed</a></p></footer>
+</body>
+</html>

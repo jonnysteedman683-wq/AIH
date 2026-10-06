@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cost-aware model routing: pay for frontier only when it matters | AIH</title>
+<meta name="description" content="How we route tasks to cheap or free models by default and only spend on frontier models when the task actually needs them." />
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<nav><div class="wrap nav"><div class="brand">🤖 Artificial <span>Intelligence Hub</span></div><div><a href="../index.html#services">Services</a><a href="../index.html#tools">Tools</a><a href="index.html">Blog</a><a href="../index.html#contact" class="btn">Get Started</a></div></div></nav>
+<article class="post wrap">
+  <p class="crumb"><a href="index.html">← Blog</a> · <span class="date">Oct 6, 2026</span></p>
+  <h1>Cost-aware model routing: pay for frontier only when it matters</h1>
+  <p class="lede">Most of your agent's work doesn't need a frontier model. Routing it to a cheap or free one is the single easiest way to cut an AI bill — without losing quality where it counts.</p>
+
+  <h2>The mistake: one model for everything</h2>
+  <p>Point every task at the biggest model and you pay frontier prices for trivial work — summarizing a log, extracting a field, drafting a routine email. The bill balloons and the quality gain is invisible, because the task never needed the frontier model in the first place.</p>
+
+  <h2>What we do instead</h2>
+  <ul>
+    <li><strong>Default to cheap/free.</strong> Routine, well-scoped tasks run on a budget model by default.</li>
+    <li><strong>Escalate only on signal.</strong> A task that fails, needs deep reasoning, or produces a deliverable worth real money gets routed to a frontier model.</li>
+    <li><strong>Pin the model per job.</strong> Cron jobs and recurring agents are pinned to a specific model so they don't silently drift onto an expensive one when the global default changes.</li>
+  </ul>
+
+  <h2>The result</h2>
+  <p>We run a fleet of agents and cron jobs continuously, and the cost stays flat — because the expensive model is the exception, not the default. The discipline is the same as any budget: <strong>spend where it returns, save where it doesn't.</strong></p>
+
+  <p class="readmore"><a href="index.html">Read more from the AIH blog →</a></p>
+</article>
+<footer class="wrap"><p>&copy; 2026 Artificial Intelligence Hub · <a href="../feed.xml">RSS feed</a></p></footer>
+</body>
+</html>
