@@ -49,8 +49,8 @@ h1 .accent{color:var(--accent)}
 .terminal .cursor{display:inline-block;width:8px;height:15px;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
 .stats{display:flex;gap:44px;margin-top:48px;flex-wrap:wrap}
-.stat b{display:block;font-family:var(--display);font-size:1.7rem;color:var(--accent)}
-.stat span{color:var(--muted);font-size:.85rem}
+.stat b{display:block;font-family:var(--display);font-size:1.7rem;color:var(--accent);line-height:1.1}
+.stat span{display:block;color:var(--muted);font-size:.85rem;margin-top:6px}
 section{padding:66px 0;border-top:1px solid var(--line)}
 h2{font-family:var(--display);font-size:1.8rem;font-weight:700;margin:10px 0 8px;letter-spacing:-.3px}
 .sub{color:var(--muted);margin-bottom:36px;max-width:640px}
@@ -68,7 +68,7 @@ h2{font-family:var(--display);font-size:1.8rem;font-weight:700;margin:10px 0 8px
 .features{list-style:none;margin:14px 0 20px}
 .features li{padding:6px 0;color:var(--muted);font-size:.92rem}
 .features li::before{content:'✓ ';color:var(--ok);font-weight:700}
-.card.featured{border:1px solid var(--accent);box-shadow:0 0 30px rgba(240,166,60,.12)}
+.card.featured{border:2px solid var(--accent);box-shadow:0 0 34px rgba(240,166,60,.18)}
 .news-card{padding:20px}
 .news-card .date{color:var(--muted);font-family:var(--mono);font-size:.72rem;margin-bottom:6px}
 .news-card h3{margin-bottom:6px}
