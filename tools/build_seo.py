@@ -161,7 +161,7 @@ def main():
         "User-agent: *\nAllow: /\nDisallow: /dashboard.html\nDisallow: /tools/\n\nSitemap: %s/sitemap.xml\n" % BASE
     )
     # sitemap.xml
-    urls = [("", "1.0", "weekly"), ("blog/index.html", "0.8", "weekly")]
+    urls = [("", "1.0", "weekly"), ("blog/index.html", "0.8", "weekly"), ("delivery.html", "0.8", "monthly")]
     for p in sorted(pages):
         rel = os.path.relpath(p, ROOT).replace(os.sep, "/")
         if rel.startswith("blog/post-"):

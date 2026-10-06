@@ -6,6 +6,7 @@ Live at: **https://jonnysteedman683-wq.github.io/AIH/**
 
 ## Homepage
 - **What I build** — lead follow-up, appointment workflows, invoice and intake automation
+- **Delivery standards** — project scoping, verification, human checkpoints, failure handling, and handoff expectations (`delivery.html`)
 - **How it works** — free audit, scoped proposal, build/test/handoff
 - **Indicative project ranges** — $1k–$3.5k starter, $3k–$15k growth build, $15k–$50k+ enterprise; managed support is scoped separately
 - **Field notes** — build-in-public posts and grounded AI/agent practice
