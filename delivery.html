@@ -67,6 +67,25 @@
     </div>
   </section>
 
+  <section class="workflow-demo-section" aria-labelledby="demo-heading">
+    <div class="wrap">
+      <div class="demo-intro"><span class="eyebrow">Try the decision point</span><h2 id="demo-heading">A human stays<br><span class="accent">in the loop.</span></h2><p>This small, fictional example shows what an approval checkpoint can look like. The buttons only change this demo on this page: they do not send a message, store data or connect to a service.</p></div>
+      <div class="workflow-demo" data-demo-workflow>
+        <div class="demo-topline"><span>SIMULATION · FICTIONAL SAMPLE</span><span>NO LIVE INTEGRATION</span></div>
+        <div class="demo-request"><span class="demo-label">SAMPLE ENQUIRY</span><p>“Could someone follow up about a service quote?”</p><small>Suggested next step: prepare a reply for a person to review.</small></div>
+        <div class="demo-approval"><span class="demo-step">HUMAN CHECKPOINT</span><p>Review the suggested action. Choose whether to approve, decline or test a failure path.</p>
+          <div class="demo-actions" role="group" aria-label="Simulated human decision">
+            <button type="button" data-demo-action="approve">Approve follow-up</button>
+            <button type="button" data-demo-action="reject">Decline</button>
+            <button type="button" data-demo-action="failure">Simulate failure</button>
+            <button type="button" data-demo-action="reset">Reset demo</button>
+          </div>
+        </div>
+        <p class="demo-status" data-demo-status role="status" aria-live="polite" aria-atomic="true">Waiting for a human decision.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="delivery-guardrails">
     <div class="wrap">
       <div class="delivery-heading"><span class="eyebrow">Boundaries are part of the design</span><h2>Useful automation<br><span class="accent">knows its limits.</span></h2></div>
@@ -99,6 +118,24 @@
   </section>
 </main>
 
+<script>
+(function(){
+  var demo = document.querySelector('[data-demo-workflow]');
+  if (!demo) return;
+  var status = demo.querySelector('[data-demo-status]');
+  var messages = {
+    approve: 'Simulation only — follow-up is ready for human review.',
+    reject: 'No message sent — a person declined the follow-up.',
+    failure: 'Simulated failure — no message sent; ask a person to review.',
+    reset: 'Waiting for a human decision.'
+  };
+  demo.addEventListener('click', function (event) {
+    var button = event.target.closest('button[data-demo-action]');
+    if (!button || !Object.prototype.hasOwnProperty.call(messages, button.dataset.demoAction)) return;
+    status.textContent = messages[button.dataset.demoAction];
+  });
+})();
+</script>
 <footer>
   <div class="wrap footer-inner">
     <a class="brand" href="./" aria-label="AIH home"><span class="mark">AI</span><span>H</span></a>
