@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<div class="glass" aria-hidden="true"></div>
 <nav>
   <div class="wrap nav">
     <div class="brand"><span class="mark">AI</span><span>H</span></div>
@@ -110,6 +112,7 @@
   </div>
 </footer>
 
+<script src="bg.js"></script>
 <script>
   // Agent-activity terminal ticker (signature element)
   var lines = [
