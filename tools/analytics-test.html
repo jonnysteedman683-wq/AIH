@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="robots" content="noindex" />
+<title>AIH analytics — self-test harness</title>
+<style>body{min-height:2600px;font-family:ui-monospace,monospace;background:#0a0e14;color:#eef2f7}
+#leadForm input,#leadForm textarea{display:block;margin:6px 0;padding:8px}
+#ok{display:none}#result{white-space:pre-wrap;padding:12px;border:1px solid #232c3b;margin-top:20px}</style>
+</head>
+<body>
+  <h1>analytics self-test</h1>
+  <a id="cta1" class="btn primary" href="#contact">Get Started</a>
+  <a id="cta2" class="btn" href="https://example.com/x">Outbound thing</a>
+  <form id="leadForm"><input id="em" type="email" name="email" /><textarea name="message"></textarea>
+    <button type="submit" class="btn primary">Send it</button></form>
+  <div id="ok" data-fs-success>ok</div>
+  <div id="result">RUNNING</div>
+<script src="../analytics.js"></script>
+<script>
+var A = [], pass = 0, fail = 0;
+function a(name, cond, detail) { (cond ? pass++ : fail++); A.push("ASSERT|" + name + "|" + (cond ? "PASS" : "FAIL") + "|" + (detail === undefined ? "" : detail)); }
+function counts() { return window.AIH.analytics.summary(); }
+function finish() {
+  document.getElementById('result').textContent =
+    "TESTSUITE|pass=" + pass + "|fail=" + fail + "\n" + A.join("\n") +
+    "\nBUFFER|" + JSON.stringify(counts());
+}
+function step(fn, ms) { return new Promise(function (r) { setTimeout(function () { fn(); r(); }, ms); }); }
+
+(async function () {
+  await step(function(){}, 250);   // let DOMContentLoaded boot() run first
+  // 1. pageview recorded on boot
+  a("pageview_recorded", counts().pageview === 1, "pageview=" + counts().pageview);
+  a("session_id", /^s_[a-z0-9]{10}$/.test(window.AIH.analytics.session), window.AIH.analytics.session);
+  a("no_collector_configured", window.AIH.analytics.config.endpoint === "", "endpoint='" + window.AIH.analytics.config.endpoint + "'");
+
+  // 2. CTA click tracked with a label
+  document.getElementById('cta1').click();
+  a("cta_click_tracked", counts().cta_click === 1, JSON.stringify(counts()));
+  var last = window.AIH.analytics.events().slice(-1)[0];
+  a("cta_label_captured", last.props.label === "Get Started", last.props.label);
+
+  // 3. outbound click tracked separately (prevent navigation away in the harness)
+  var c2 = document.getElementById('cta2');
+  c2.addEventListener('click', function (e) { e.preventDefault(); }, true);
+  c2.click();
+  a("outbound_tracked", counts().outbound === 1, "host=" + (window.AIH.analytics.events().slice(-1)[0].props.host));
+
+  // 4. PII safety: type a real address, then confirm nothing recorded it
+  var em = document.getElementById('em');
+  em.focus(); em.value = "secret.person@example.com";
+  em.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+  a("form_start_tracked", counts().form_start === 1, "start=" + counts().form_start);
+  a("no_pii_in_buffer", JSON.stringify(window.AIH.analytics.events()).indexOf("@") === -1, "buffer has no '@'");
+
+  // 5. form submit (click handler) then confirmed success via MutationObserver
+  var lf = document.getElementById('leadForm');
+  lf.addEventListener('submit', function (e) { e.preventDefault(); }, true);  // no real navigation
+  lf.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  a("submit_attempt_tracked", counts().form_submit_attempt === 1);
+  document.getElementById('ok').style.display = 'block';
+  await step(function(){}, 400);
+  a("submit_confirmed_tracked", counts().form_submit === 1, "submit=" + counts().form_submit);
+
+  // 6. scroll depth
+  window.scrollTo(0, document.body.scrollHeight);
+  window.dispatchEvent(new Event('scroll'));
+  await step(function(){}, 300);
+  a("scroll_depth_tracked", counts().scroll_100 === 1 || counts().scroll_75 === 1, JSON.stringify(counts()));
+
+  // 7. funnel maths
+  var f = window.AIH.analytics.funnel();
+  a("funnel_view", f.view === 1, JSON.stringify(f));
+  a("funnel_submit", f.submit === 1);
+  a("funnel_pct", f.rates.view_to_submit === 100, "view->submit=" + f.rates.view_to_submit + "%");
+  a("funnel_ordering", f.view >= f.cta && f.cta >= f.start && f.start >= f.submit, "shape ok");
+
+  // 8. CSV export
+  var csv = window.AIH.analytics.csv();
+  a("csv_header", csv.split("\n")[0] === '"event","timestamp_iso","session","path","referrer","viewport","props"', csv.split("\n")[0]);
+  a("csv_rows", csv.split("\n").length >= 4, "rows=" + csv.split("\n").length);
+
+  // 9. counter: exactly one pageview even after many events
+  a("pageview_not_inflated", counts().pageview === 1);
+
+  finish();
+})();
+</script>
+</body>
+</html>

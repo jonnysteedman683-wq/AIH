@@ -13,6 +13,7 @@ BASE = "https://jonnysteedman683-wq.github.io/AIH"
 OG_IMG = BASE + "/og.png"
 SITE_NAME = "Artificial Intelligence Hub"
 START, END = "<!-- SEO:AIH -->", "<!-- /SEO:AIH -->"
+ASTART, AEND = "<!-- ANALYTICS:AIH -->", "<!-- /ANALYTICS:AIH -->"
 
 SKIP_DIRS = {".git", "tools"}
 
@@ -87,6 +88,16 @@ def page_meta(path):
     return src, title, desc
 
 
+def analytics_block(rel, is_article):
+    depth = rel.count("/")
+    prefix = "../" * depth
+    return (
+        ASTART + "\n"
+        '<script defer src="%sanalytics.js" data-goatcounter="" data-endpoint=""></script>\n' % prefix
+        + AEND + "\n"
+    )
+
+
 def main():
     pages = []
     for dirpath, dirnames, filenames in os.walk(ROOT):
@@ -110,11 +121,18 @@ def main():
             anchor = re.search(r'<meta name="viewport"[^>]*>\s*\n?', src)
             idx = anchor.end() if anchor else src.find("<title>")
         src = src[:idx] + block + src[idx:]
+        # analytics tag just before </body> (skip the operator dashboard)
+        if rel != "dashboard.html":
+            if ASTART in src:
+                src = re.sub(re.escape(ASTART) + r".*?" + re.escape(AEND) + r"\n?", "", src, flags=re.S)
+            close = src.rfind("</body>")
+            if close != -1:
+                src = src[:close] + analytics_block(rel, is_article) + src[close:]
         open(p, "w", encoding="utf-8", newline="\n").write(src)
         changed.append(rel)
     # robots.txt
     open(os.path.join(ROOT, "robots.txt"), "w", encoding="utf-8", newline="\n").write(
-        "User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n" % BASE
+        "User-agent: *\nAllow: /\nDisallow: /dashboard.html\nDisallow: /tools/\n\nSitemap: %s/sitemap.xml\n" % BASE
     )
     # sitemap.xml
     urls = [("", "1.0", "weekly"), ("blog/index.html", "0.8", "weekly")]

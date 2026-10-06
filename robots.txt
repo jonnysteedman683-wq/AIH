@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /dashboard.html
+Disallow: /tools/
 
 Sitemap: https://jonnysteedman683-wq.github.io/AIH/sitemap.xml

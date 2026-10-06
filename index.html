@@ -40,7 +40,7 @@
       <a href="#services">Services</a>
       <a href="#tools">Tools</a>
       <a href="blog/index.html">Blog</a>
-      <a href="#contact" class="btn primary">Get Started</a>
+      <a href="#contact" class="btn primary" data-aih-cta="nav_get_started">Get Started</a>
     </div>
   </div>
 </nav>
@@ -51,9 +51,9 @@
     <h1>Everything AI. <span class="accent">One place.</span></h1>
     <p class="tag">Artificial Intelligence Hub (AIH) is your single destination for AI models, autonomous agents, and productivity tools — plus the latest news, expert services, and ready-to-ship products.</p>
     <div class="hero-cta">
-      <a href="#contact" class="btn primary">Get Started</a>
-      <a href="#services" class="btn">Explore Services</a>
-      <a href="#news" class="btn">Latest News</a>
+      <a href="#contact" class="btn primary" data-aih-cta="hero_get_started">Get Started</a>
+      <a href="#services" class="btn" data-aih-cta="hero_explore_services">Explore Services</a>
+      <a href="#news" class="btn" data-aih-cta="hero_latest_news">Latest News</a>
     </div>
 
     <div class="terminal" aria-label="Live agent activity">
@@ -88,9 +88,9 @@
     <h2>Tools &amp; Products</h2>
     <p class="sub">Ready-to-use AI products and agent toolkits built in-house. Subscribe monthly, scale as you grow.</p>
     <div class="grid g3">
-      <div class="card"><div class="pill">Free</div><div class="ic">📋</div><h3>Starter</h3><div class="price">$0<small>/mo</small></div><ul class="features"><li>AIH news digest</li><li>1 starter tool</li><li>Community access</li></ul><a href="#contact" class="btn">Start Free</a></div>
-      <div class="card featured"><div class="pill">Popular</div><div class="ic">⚡</div><h3>Pro</h3><div class="price">$29<small>/mo</small></div><ul class="features"><li>All premium AI tools</li><li>Lead-gen automation</li><li>Priority support</li><li>Newsletter+insights</li></ul><a href="#contact" class="btn primary">Get Pro</a></div>
-      <div class="card"><div class="pill">Custom</div><div class="ic">🏢</div><h3>Agency</h3><div class="price">Custom</div><ul class="features"><li>Bespoke multi-agent build</li><li>Managed automation</li><li>Dedicated engineer</li><li>Retainer support</li></ul><a href="#contact" class="btn">Talk to Us</a></div>
+      <div class="card"><div class="pill">Free</div><div class="ic">📋</div><h3>Starter</h3><div class="price">$0<small>/mo</small></div><ul class="features"><li>AIH news digest</li><li>1 starter tool</li><li>Community access</li></ul><a href="#contact" class="btn" data-aih-cta="plan_starter">Start Free</a></div>
+      <div class="card featured"><div class="pill">Popular</div><div class="ic">⚡</div><h3>Pro</h3><div class="price">$29<small>/mo</small></div><ul class="features"><li>All premium AI tools</li><li>Lead-gen automation</li><li>Priority support</li><li>Newsletter+insights</li></ul><a href="#contact" class="btn primary" data-aih-cta="plan_pro">Get Pro</a></div>
+      <div class="card"><div class="pill">Custom</div><div class="ic">🏢</div><h3>Agency</h3><div class="price">Custom</div><ul class="features"><li>Bespoke multi-agent build</li><li>Managed automation</li><li>Dedicated engineer</li><li>Retainer support</li></ul><a href="#contact" class="btn" data-aih-cta="plan_agency">Talk to Us</a></div>
     </div>
   </div>
 </section>
@@ -101,9 +101,9 @@
     <h2>News &amp; Insights</h2>
     <p class="sub">Build-in-public updates, AI model releases, and grounded takes on autonomous agents. No hype.</p>
     <div class="grid g3">
-      <a class="card news-card" href="blog/post-4.html" style="color:inherit"><div class="date">Field notes · Oct 2026</div><h3>Agent DNA: why we treat our agent fleet like a gene pool</h3><p>Tiers, drift, mutation, and crossover — and the diversity that keeps a fleet from collapsing into one brittle behavior.</p></a>
-      <a class="card news-card" href="blog/post-1.html" style="color:inherit"><div class="date">Build #001 · Oct 2026</div><h3>We built a multi-agent stack that ships verified PRs</h3><p>Scoped branches, static verification gates, and the discipline that makes fake completion structurally impossible.</p></a>
-      <a class="card news-card" href="blog/post-2.html" style="color:inherit"><div class="date">Field notes · Oct 2026</div><h3>Where AI automation actually pays for small business</h3><p>Lead-gen, invoice chasing, and appointment follow-up — the workflows with real returns and the niches with budgets.</p></a>
+      <a class="card news-card" data-aih-cta="news_card_1" href="blog/post-4.html" style="color:inherit"><div class="date">Field notes · Oct 2026</div><h3>Agent DNA: why we treat our agent fleet like a gene pool</h3><p>Tiers, drift, mutation, and crossover — and the diversity that keeps a fleet from collapsing into one brittle behavior.</p></a>
+      <a class="card news-card" data-aih-cta="news_card_2" href="blog/post-1.html" style="color:inherit"><div class="date">Build #001 · Oct 2026</div><h3>We built a multi-agent stack that ships verified PRs</h3><p>Scoped branches, static verification gates, and the discipline that makes fake completion structurally impossible.</p></a>
+      <a class="card news-card" data-aih-cta="news_card_3" href="blog/post-2.html" style="color:inherit"><div class="date">Field notes · Oct 2026</div><h3>Where AI automation actually pays for small business</h3><p>Lead-gen, invoice chasing, and appointment follow-up — the workflows with real returns and the niches with budgets.</p></a>
     </div>
   </div>
 </section>
@@ -119,7 +119,7 @@
       <textarea name="message" placeholder="What can we help you automate or build?" data-fs-field></textarea>
       <span data-fs-error="email" style="color:#ff6b7a;font-size:.85rem"></span>
       <span data-fs-error="message" style="color:#ff6b7a;font-size:.85rem"></span>
-      <button type="submit" class="btn primary" data-fs-submit-btn>Send it</button>
+      <button type="submit" class="btn primary" data-aih-cta="lead_submit" data-fs-submit-btn>Send it</button>
     </form>
     <div data-fs-success style="color:#3ecf8e;font-weight:600;margin-top:14px">✅ Thanks! We'll be in touch. (You're on the list.)</div>
     <div data-fs-error style="color:#ff6b7a;font-size:.9rem;margin-top:10px">Something went wrong — please try again.</div>
@@ -159,5 +159,8 @@
   formspree('initForm', { formElement: '#leadForm', formId: 'meaeoeav' });
 </script>
 <script src="https://unpkg.com/@formspree/ajax@1" defer crossorigin="anonymous"></script>
+<!-- ANALYTICS:AIH -->
+<script defer src="analytics.js" data-goatcounter="" data-endpoint=""></script>
+<!-- /ANALYTICS:AIH -->
 </body>
 </html>

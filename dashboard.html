@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- SEO:AIH -->
+<link rel="canonical" href="https://jonnysteedman683-wq.github.io/AIH/dashboard.html" />
+<meta name="theme-color" content="#0a0e14" />
+<meta name="author" content="Jonny Steedman" />
+<meta name="robots" content="index,follow" />
+<meta property="og:site_name" content="Artificial Intelligence Hub" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Analytics — AIH (operator view)" />
+<meta property="og:description" content="Funnel from pageview to captured lead. No cookies, no PII, no third-party tag by default — events are recorded in the visitor&#x27;s browser; this page reads this browser&#x27;s buffer unless a collector endpoint is configured below." />
+<meta property="og:url" content="https://jonnysteedman683-wq.github.io/AIH/dashboard.html" />
+<meta property="og:image" content="https://jonnysteedman683-wq.github.io/AIH/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Artificial Intelligence Hub — Everything AI. One place." />
+<meta property="og:locale" content="en_AU" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Analytics — AIH (operator view)" />
+<meta name="twitter:description" content="Funnel from pageview to captured lead. No cookies, no PII, no third-party tag by default — events are recorded in the visitor&#x27;s browser; this page reads this browser&#x27;s buffer unless a collector endpoint is configured below." />
+<meta name="twitter:image" content="https://jonnysteedman683-wq.github.io/AIH/og.png" />
+<link rel="alternate" type="application/rss+xml" title="AIH Blog" href="https://jonnysteedman683-wq.github.io/AIH/feed.xml" />
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://jonnysteedman683-wq.github.io/AIH/#org","name":"Artificial Intelligence Hub","url":"https://jonnysteedman683-wq.github.io/AIH/","logo":"https://jonnysteedman683-wq.github.io/AIH/og.png","description":"The one-stop shop for AI models, autonomous agents, tools, news, and related services and products.","founder":{"@type":"Person","name":"Jonny Steedman"}},{"@type":"WebSite","@id":"https://jonnysteedman683-wq.github.io/AIH/#site","url":"https://jonnysteedman683-wq.github.io/AIH/","name":"Artificial Intelligence Hub","publisher":{"@id":"https://jonnysteedman683-wq.github.io/AIH/#org"},"inLanguage":"en-AU"}]}</script>
+<!-- /SEO:AIH -->
+<title>Analytics — AIH (operator view)</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="stylesheet" href="style.css" />
+<style>
+  .dash{padding:48px 0 72px}
+  .dash h1{font-size:2rem;margin:12px 0 6px}
+  .panel{background:rgba(16,22,31,.6);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:22px;margin-bottom:20px;backdrop-filter:blur(12px)}
+  .panel h2{font-size:1.1rem;margin:0 0 16px}
+  .funnel{display:grid;gap:10px}
+  .fstage{display:grid;grid-template-columns:130px 1fr 96px;align-items:center;gap:14px}
+  .fstage .lab{font-family:var(--mono);font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .fbar{height:26px;background:var(--panel2);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+  .fbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#f7b45a)}
+  .fbar.alt i{background:linear-gradient(90deg,var(--data),#7aa6ff)}
+  .fbar.ok i{background:linear-gradient(90deg,var(--ok),#66e0ac)}
+  .fstage .num{text-align:right;font-family:var(--display);font-weight:700}
+  .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+  .kpi .panel{margin:0;padding:18px}
+  .kpi b{display:block;font-family:var(--display);font-size:1.8rem;color:var(--accent);line-height:1.1}
+  .kpi span{display:block;color:var(--muted);font-size:.8rem;margin-top:6px}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  td.n{text-align:right;font-family:var(--mono)}
+  .rowbtns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .note{color:var(--muted);font-size:.85rem}
+  code{background:var(--panel2);border:1px solid var(--line);padding:2px 7px;border-radius:5px;font-size:.85em;font-family:var(--mono)}
+  .empty{color:var(--muted);padding:14px 0}
+  @media(max-width:860px){.kpi{grid-template-columns:repeat(2,1fr)}.fstage{grid-template-columns:96px 1fr 72px}}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<div class="glass" aria-hidden="true"></div>
+<nav><div class="wrap nav">
+  <div class="brand"><span class="mark">AI</span>H</div>
+  <div><a href="index.html">Site</a><a href="blog/index.html">Blog</a><a href="index.html#contact" class="btn primary" data-aih-cta="dash_get_started">Get Started</a></div>
+</div></nav>
+
+<main class="dash wrap">
+  <span class="eyebrow">Internal · Conversion instrumentation</span>
+  <h1>Analytics</h1>
+  <p class="sub">Funnel from pageview to captured lead. No cookies, no PII, no third-party tag by default —
+     events are recorded in the visitor's browser; this page reads <em>this browser's</em> buffer unless a
+     collector endpoint is configured below.</p>
+
+  <div id="status" class="panel"></div>
+
+  <div class="kpi" id="kpi"></div>
+
+  <div class="panel">
+    <h2>Conversion funnel</h2>
+    <div class="funnel" id="funnel"></div>
+    <p class="note" id="funnelNote" style="margin-top:14px"></p>
+  </div>
+
+  <div class="panel">
+    <h2>Events</h2>
+    <div id="events"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Breakdowns</h2>
+    <div class="grid g2" id="breakdowns"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Raw data</h2>
+    <div class="rowbtns">
+      <button class="btn" id="dl">Download CSV</button>
+      <button class="btn" id="cp">Copy CSV</button>
+      <button class="btn" id="reload">Reload</button>
+      <button class="btn" id="clr">Clear local data</button>
+    </div>
+    <p class="note" id="rawNote"></p>
+  </div>
+
+  <div class="panel">
+    <h2>Turn on a real collector (optional, free)</h2>
+    <p class="note">The site ships with no third-party analytics. Two supported paths:</p>
+    <ol class="note" style="margin:10px 0 0 18px">
+      <li><strong>GoatCounter</strong> (free for non-commercial, privacy-first, has a dashboard + API): create a
+        code at goatcounter.com, then set <code>data-goatcounter="yourcode"</code> on the analytics script tag.
+        Every pageview and the lead conversion are then counted server-side.</li>
+      <li><strong>Your own endpoint</strong>: point <code>data-endpoint</code> at any URL that accepts a JSON
+        POST (<code>{site, sent, records[]}</code>) — a Cloudflare Worker, Vercel function, or Formspree-adjacent
+        webhook. Records are sent with <code>sendBeacon</code> and survive navigation.</li>
+    </ol>
+    <p class="note" style="margin-top:12px">Events are buffered locally first (<code>aih:analytics:v1</code>) and only
+      sent when a collector is configured — Do Not Track and Global Privacy Control switch sending off entirely.</p>
+  </div>
+</main>
+
+<footer><div class="wrap"><p>AIH operator view · built by Jonny Steedman</p></div></footer>
+
+<script src="bg.js"></script>
+<script>
+(function () {
+  "use strict";
+  var KEY = "aih:analytics:v1";
+  function read() { try { return JSON.parse(localStorage.getItem(KEY) || "[]") || []; } catch (e) { return []; } }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
+  // Every value from the buffer is inserted with textContent (never innerHTML);
+  // the only innerHTML use on this page is `= ""` to clear a container.
+  function clear(node) { node.innerHTML = ""; }
+
+  var rows = read();
+
+  /* ---- status ---- */
+  var st = document.getElementById("status");
+  function status() {
+    var cfg = (window.AIH_ANALYTICS || {});
+    var ep = cfg.endpoint || "";
+    st.innerHTML = "";
+    var head = el("div");
+    head.style.cssText = "display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:" + (ep ? "#3ecf8e" : "#f0a63c");
+    head.appendChild(el("span", null, ep ? "collector: " + ep : "collector: none — local buffer only"));
+    st.appendChild(head);
+    st.appendChild(el("p", "note", rows.length + " records in this browser's buffer. Open any site page with " +
+      "?aih-analytics=1 for the live in-page panel."));
+  }
+
+  var FSTAGES = [
+    { k: "view", ev: "pageview", label: "Visited", cls: "alt" },
+    { k: "cta", ev: "cta_click", label: "CTA click", cls: "" },
+    { k: "start", ev: "form_start", label: "Form start", cls: "" },
+    { k: "submit", ev: "form_submit", label: "Lead", cls: "ok" }
+  ];
+  function counts(rs) { var o = {}, i; for (i = 0; i < rs.length; i++) o[rs[i].ev] = (o[rs[i].ev] || 0) + 1; return o; }
+
+  function render() {
+    var c = counts(rows);
+    var f = { view: c.pageview || 0, cta: c.cta_click || 0, start: c.form_start || 0, submit: c.form_submit || 0 };
+    var conv = f.view ? (f.submit / f.view * 100).toFixed(1) : "0.0";
+
+    /* KPI */
+    var kpi = document.getElementById("kpi");
+    kpi.innerHTML = "";
+    [["Pageviews", f.view], ["CTA clicks", f.cta], ["Leads captured", f.submit], ["View → lead", conv + "%"]]
+      .forEach(function (p) {
+        var box = el("div", "panel");
+        box.appendChild(el("b", null, String(p[1])));
+        box.appendChild(el("span", null, p[0]));
+        kpi.appendChild(box);
+      });
+
+    /* funnel */
+    var fu = document.getElementById("funnel");
+    fu.innerHTML = "";
+    var max = Math.max(f.view, 1);
+    var prev = null;
+    FSTAGES.forEach(function (s) {
+      var v = f[s.k];
+      var st = el("div", "fstage");
+      st.appendChild(el("div", "lab", s.label));
+      var bar = el("div", "fbar" + (s.cls ? " " + s.cls : ""));
+      var inner = el("i");
+      inner.style.width = Math.max((v / max) * 100, v ? 3 : 0) + "%";
+      bar.appendChild(inner);
+      st.appendChild(bar);
+      var n = el("div", "num", String(v));
+      st.appendChild(n);
+      fu.appendChild(st);
+      prev = v;
+    });
+    document.getElementById("funnelNote").textContent =
+      "Step-through: " + pct(f.view, f.cta) + " visit→CTA · " + pct(f.cta, f.start) + " CTA→start · " +
+      pct(f.start, f.submit) + " start→lead · " + pct(f.view, f.submit) + " end-to-end.";
+
+    /* events table */
+    var ev = document.getElementById("events");
+    ev.innerHTML = "";
+    var keys = Object.keys(c).sort(function (a, b) { return c[b] - c[a]; });
+    if (!keys.length) { ev.appendChild(el("p", "empty", "No events recorded in this browser yet.")); }
+    else {
+      var t = el("table"); var thead = el("thead"); var hr = el("tr");
+      ["Event", "Count", "Share"].forEach(function (h) { hr.appendChild(el("th", null, h)); });
+      thead.appendChild(hr); t.appendChild(thead);
+      var tb = el("tbody");
+      keys.forEach(function (k) {
+        var tr = el("tr");
+        tr.appendChild(el("td", null, k));
+        tr.appendChild(el("td", "n", String(c[k])));
+        tr.appendChild(el("td", "n", (c[k] / rows.length * 100).toFixed(0) + "%"));
+        tb.appendChild(tr);
+      });
+      t.appendChild(tb); ev.appendChild(t);
+    }
+
+    /* breakdowns */
+    var bd = document.getElementById("breakdowns");
+    bd.innerHTML = "";
+    function table(title, pairs) {
+      var box = el("div", "panel"); box.style.marginBottom = "0";
+      box.appendChild(el("h2", null, title));
+      if (!pairs.length) { box.appendChild(el("p", "empty", "—")); }
+      else {
+        var t = el("table"), tb = el("tbody");
+        pairs.slice(0, 8).forEach(function (p) {
+          var tr = el("tr");
+          tr.appendChild(el("td", null, p[0]));
+          tr.appendChild(el("td", "n", String(p[1])));
+          tb.appendChild(tr);
+        });
+        t.appendChild(tb); box.appendChild(t);
+      }
+      return box;
+    }
+    function group(fn) {
+      var m = {};
+      rows.forEach(function (r) { var k = fn(r); if (k === undefined || k === null || k === "") return; m[k] = (m[k] || 0) + 1; });
+      return Object.keys(m).map(function (k) { return [k, m[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+    }
+    bd.appendChild(table("Top CTA labels", group(function (r) { return r.ev === "cta_click" ? r.props.label : null; })));
+    bd.appendChild(table("Entry pages", group(function (r) { return r.ev === "pageview" ? r.path : null; })));
+    bd.appendChild(table("Referrers", group(function (r) { return r.ev === "pageview" ? (r.ref || "(direct)") : null; })));
+    bd.appendChild(table("Viewport", group(function (r) { return r.ev === "pageview" ? r.vp : null; })));
+    bd.appendChild(table("Outbound clicks", group(function (r) { return r.ev === "outbound" ? r.props.host : null; })));
+    bd.appendChild(table("Scroll depth", group(function (r) { return /^scroll_/.test(r.ev) ? r.ev.replace("scroll_", "") + "%" : null; })));
+
+    document.getElementById("rawNote").textContent = rows.length + " local records · "
+      + new Set(rows.map(function (r) { return r.sid; })).size + " sessions · "
+      + (rows.length ? new Date(rows[rows.length - 1].ts).toLocaleString() : "n/a") + " last activity";
+  }
+  function pct(a, b) { return a ? (b / a * 100).toFixed(0) + "%" : "—"; }
+
+  function csv() {
+    var out = [["event", "timestamp_iso", "session", "path", "referrer", "viewport", "props"]];
+    rows.forEach(function (r) { out.push([r.ev, new Date(r.ts).toISOString(), r.sid, r.path, r.ref, r.vp, JSON.stringify(r.props)]); });
+    return out.map(function (r) { return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(","); }).join("\n");
+  }
+  function blobDownload(text, name) {
+    var b = new Blob([text], { type: "text/csv" }), u = URL.createObjectURL(b), a = el("a");
+    a.href = u; a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(u); a.remove(); }, 500);
+  }
+  document.getElementById("dl").onclick = function () { blobDownload(csv(), "aih-analytics-" + Date.now() + ".csv"); };
+  document.getElementById("cp").onclick = function () {
+    if (navigator.clipboard) navigator.clipboard.writeText(csv()).then(function () { alert("CSV copied (" + rows.length + " rows)"); });
+    else alert("Clipboard unavailable — use Download CSV.");
+  };
+  document.getElementById("reload").onclick = function () { rows = read(); status(); render(); };
+  document.getElementById("clr").onclick = function () {
+    if (!confirm("Clear this browser's locally buffered analytics records?")) return;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    rows = []; status(); render();
+  };
+
+  status(); render();
+})();
+</script>
+</body>
+</html>
