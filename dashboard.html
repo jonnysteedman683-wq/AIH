@@ -31,7 +31,23 @@
   .note{color:var(--muted);font-size:.85rem}
   code{background:var(--panel2);border:1px solid var(--line);padding:2px 7px;border-radius:5px;font-size:.85em;font-family:var(--mono)}
   .empty{color:var(--muted);padding:14px 0}
+  .history-tools{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:4px 0 16px}
+  .range-tabs{display:inline-flex;gap:5px;padding:4px;border:1px solid var(--line);border-radius:7px;background:var(--panel2)}
+  .range-tabs button{font:500 .78rem var(--mono);color:var(--muted);background:transparent;border:0;border-radius:4px;padding:7px 10px;cursor:pointer}
+  .range-tabs button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+  .range-tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .history-chart{display:block;width:100%;height:184px;margin:4px 0 12px;overflow:visible}
+  .chart-grid{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+  .chart-line{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+  .chart-area{fill:var(--accent);opacity:.1}
+  .chart-point{fill:var(--panel);stroke:var(--accent);stroke-width:2;vector-effect:non-scaling-stroke}
+  .chart-label{fill:var(--muted);font:10px var(--mono)}
+  .chart-empty{fill:var(--muted);font:12px var(--body)}
+  .history-table{overflow-x:auto}
+  .range-summary{color:var(--muted);font-size:.82rem}
   @media(max-width:860px){.kpi{grid-template-columns:repeat(2,1fr)}.fstage{grid-template-columns:96px 1fr 72px}}
+  @media(max-width:520px){.history-chart{height:160px}.range-tabs button{padding:7px 8px;font-size:.72rem}.history-tools{align-items:flex-start}}
+  @media(prefers-reduced-motion:reduce){.range-tabs button{scroll-behavior:auto}}
 </style>
 </head>
 <body>
@@ -393,37 +409,165 @@
       .then(function (r) {
         body.innerHTML = "";
         src.textContent = "· analytics/rollup.json";
-        var f = r.funnel || {};
-        note.textContent = r.records + " records · " + r.sessions + " sessions · harvested "
+        var days = (r.days || []).slice().sort(function (a, b) { return a.date.localeCompare(b.date); });
+        var newest = days.length ? days[days.length - 1].date : null;
+        var range = "30";
+        note.textContent = r.records + " records · " + r.sessions + " unique sessions overall · harvested "
           + (r.generated || "?").replace("T", " ").replace("Z", " UTC")
           + (r.first_record ? " · since " + new Date(r.first_record).toISOString().slice(0, 10) : "");
 
-        var kpi = el("div", "kpi");
-        [["All-time pageviews", f.view || 0], ["CTA clicks", f.cta || 0],
-         ["Leads captured", f.submit || 0], ["View → lead", ((f.rates && f.rates.view_to_submit) || 0) + "%"]]
-          .forEach(function (p) {
-            var b = el("div", "panel"); b.style.margin = "0";
-            b.appendChild(el("b", null, String(p[1])));
-            b.appendChild(el("span", null, p[0]));
-            kpi.appendChild(b);
-          });
-        body.appendChild(kpi);
-
-        var days = (r.days || []).slice().reverse();
-        var t = el("table"); t.style.marginTop = "18px";
-        var thead = el("thead"), hr = el("tr");
-        ["UTC day", "Views", "CTA", "Form starts", "Leads", "Sessions"].forEach(function (h) { hr.appendChild(el("th", null, h)); });
-        thead.appendChild(hr); t.appendChild(thead);
-        var tb = el("tbody");
-        days.slice(0, 30).forEach(function (d) {
-          var tr = el("tr");
-          [d.date, d.pageviews, d.cta_clicks, d.form_starts, d.leads, d.sessions].forEach(function (v, i) {
-            tr.appendChild(el("td", i ? "n" : null, String(v)));
-          });
-          tb.appendChild(tr);
+        var tools = el("div", "history-tools");
+        var tabs = el("div", "range-tabs");
+        tabs.setAttribute("role", "group");
+        tabs.setAttribute("aria-label", "History date range");
+        [["7", "7 days"], ["30", "30 days"], ["90", "90 days"], ["all", "All time"]].forEach(function (choice) {
+          var button = el("button", null, choice[1]);
+          button.type = "button";
+          button.setAttribute("data-range", choice[0]);
+          button.setAttribute("aria-pressed", choice[0] === range ? "true" : "false");
+          tabs.appendChild(button);
         });
-        t.appendChild(tb);
-        body.appendChild(t);
+        tools.appendChild(tabs);
+        var rangeSummary = el("span", "range-summary");
+        tools.appendChild(rangeSummary);
+        body.appendChild(tools);
+
+        var kpi = el("div", "kpi");
+        body.appendChild(kpi);
+        var chartTitle = el("h3", null, "Pageviews by day");
+        chartTitle.style.cssText = "font:600 .92rem var(--body);margin:22px 0 4px";
+        body.appendChild(chartTitle);
+        var chartHost = el("div");
+        body.appendChild(chartHost);
+        var tableHost = el("div", "history-table");
+        tableHost.style.marginTop = "12px";
+        body.appendChild(tableHost);
+        tabs.addEventListener("click", function (event) {
+          var button = event.target.closest("button[data-range]");
+          if (!button) return;
+          range = button.getAttribute("data-range");
+          Array.prototype.forEach.call(tabs.querySelectorAll("button[data-range]"), function (item) {
+            item.setAttribute("aria-pressed", item === button ? "true" : "false");
+          });
+          renderRange();
+        });
+
+        function renderChart(selected) {
+          chartHost.innerHTML = "";
+          var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          svg.setAttribute("class", "history-chart");
+          svg.setAttribute("viewBox", "0 0 720 184");
+          svg.setAttribute("role", "img");
+          svg.setAttribute("aria-label", "Daily pageviews for the selected history range");
+          var ns = "http://www.w3.org/2000/svg";
+          function shape(name, attrs) {
+            var node = document.createElementNS(ns, name);
+            Object.keys(attrs).forEach(function (key) { node.setAttribute(key, attrs[key]); });
+            svg.appendChild(node);
+            return node;
+          }
+          function label(x, y, text, anchor) {
+            var node = shape("text", { x: x, y: y, "text-anchor": anchor || "start", "class": "chart-label" });
+            node.textContent = text;
+          }
+          if (!selected.length) {
+            var empty = shape("text", { x: 360, y: 94, "text-anchor": "middle", "class": "chart-empty" });
+            empty.textContent = "No archived days in this range yet.";
+            chartHost.appendChild(svg);
+            return;
+          }
+          var chartStart = range === "all" ? selected[0].date :
+            new Date(new Date(newest + "T00:00:00Z").getTime() - (Number(range) - 1) * 86400000).toISOString().slice(0, 10);
+          var byDate = {};
+          selected.forEach(function (day) { byDate[day.date] = day; });
+          var chartDays = [];
+          var chartEnd = new Date(newest + "T00:00:00Z").getTime();
+          for (var stamp = new Date(chartStart + "T00:00:00Z").getTime(); stamp <= chartEnd; stamp += 86400000) {
+            var date = new Date(stamp).toISOString().slice(0, 10);
+            chartDays.push(byDate[date] || { date: date, pageviews: 0 });
+          }
+          var maxValue = Math.max.apply(null, chartDays.map(function (d) { return Number(d.pageviews) || 0; }));
+          var magnitude = Math.pow(10, Math.floor(Math.log(Math.max(maxValue, 1)) / Math.LN10));
+          var lead = maxValue / magnitude;
+          var step = magnitude * (lead <= 1 ? 1 : lead <= 2 ? 2 : lead <= 5 ? 5 : 10);
+          var top = Math.max(step, Math.ceil(maxValue / step) * step);
+          var left = 42, right = 706, upper = 12, lower = 150;
+          [0, top / 2, top].forEach(function (value) {
+            var y = lower - (value / top) * (lower - upper);
+            shape("line", { x1: left, y1: y, x2: right, y2: y, "class": "chart-grid" });
+            label(left - 8, y + 3, String(value), "end");
+          });
+          var points = chartDays.map(function (day, index) {
+            return {
+              x: chartDays.length === 1 ? (left + right) / 2 : left + index * (right - left) / (chartDays.length - 1),
+              y: lower - ((Number(day.pageviews) || 0) / top) * (lower - upper),
+              day: day
+            };
+          });
+          var line = points.map(function (p, index) { return (index ? "L" : "M") + p.x + " " + p.y; }).join(" ");
+          shape("path", { d: line + " L" + points[points.length - 1].x + " " + lower + " L" + points[0].x + " " + lower + " Z", "class": "chart-area" });
+          shape("path", { d: line, "class": "chart-line" });
+          points.forEach(function (p) {
+            var dot = shape("circle", { cx: p.x, cy: p.y, r: 3.5, "class": "chart-point" });
+            var title = document.createElementNS(ns, "title");
+            title.textContent = p.day.date + ": " + (Number(p.day.pageviews) || 0) + " pageviews";
+            dot.appendChild(title);
+          });
+          label(left, 174, chartDays[0].date.slice(5), "start");
+          if (chartDays.length > 1) label(right, 174, chartDays[chartDays.length - 1].date.slice(5), "end");
+          chartHost.appendChild(svg);
+        }
+
+        function renderRange() {
+          var selected = days;
+          if (range !== "all" && newest) {
+            var end = new Date(newest + "T00:00:00Z").getTime();
+            var start = end - (Number(range) - 1) * 86400000;
+            selected = days.filter(function (day) {
+              var stamp = new Date(day.date + "T00:00:00Z").getTime();
+              return stamp >= start && stamp <= end;
+            });
+          }
+          var totals = selected.reduce(function (sum, day) {
+            sum.views += Number(day.pageviews) || 0;
+            sum.cta += Number(day.cta_clicks) || 0;
+            sum.starts += Number(day.form_starts) || 0;
+            sum.leads += Number(day.leads) || 0;
+            sum.sessionDays += Number(day.sessions) || 0;
+            return sum;
+          }, { views: 0, cta: 0, starts: 0, leads: 0, sessionDays: 0 });
+          var rate = totals.views ? (totals.leads / totals.views * 100).toFixed(1) : "0.0";
+          rangeSummary.textContent = range === "all" ? "All archived days" : "Trailing " + range + " days from " + (newest || "latest archive");
+          kpi.innerHTML = "";
+          [["Pageviews", totals.views], ["CTA clicks", totals.cta], ["Leads captured", totals.leads],
+            ["View → lead", rate + "%"]].forEach(function (item) {
+            var box = el("div", "panel"); box.style.margin = "0";
+            box.appendChild(el("b", null, String(item[1])));
+            box.appendChild(el("span", null, item[0]));
+            kpi.appendChild(box);
+          });
+          renderChart(selected);
+          tableHost.innerHTML = "";
+          if (!selected.length) {
+            tableHost.appendChild(el("p", "empty", "No archived days in this range yet."));
+            return;
+          }
+          var table = el("table");
+          var thead = el("thead"), heading = el("tr");
+          ["UTC day", "Views", "CTA", "Form starts", "Leads", "Session-days"].forEach(function (text) { heading.appendChild(el("th", null, text)); });
+          thead.appendChild(heading); table.appendChild(thead);
+          var tbody = el("tbody");
+          selected.slice().reverse().forEach(function (day) {
+            var tr = el("tr");
+            [day.date, day.pageviews, day.cta_clicks, day.form_starts, day.leads, day.sessions].forEach(function (value, index) {
+              tr.appendChild(el("td", index ? "n" : null, String(value)));
+            });
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody); tableHost.appendChild(table);
+          tableHost.appendChild(el("p", "note", "Session-days add each day's sessions; visitors returning on different days can appear more than once."));
+        }
+        renderRange();
         body.appendChild(el("p", "note", "Permanent, versioned history: the analytics-archive Action harvests the free "
           + "collector's 12h window every 20 minutes and commits new records. Nominal volume produces no commits."));
       })
