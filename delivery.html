@@ -82,6 +82,12 @@
           </div>
         </div>
         <p class="demo-status" data-demo-status role="status" aria-live="polite" aria-atomic="true">Waiting for a human decision.</p>
+        <div class="demo-trail-wrap">
+          <div class="demo-trail-head"><span>SIMULATED AUDIT TRAIL</span><span>THIS PAGE ONLY</span></div>
+          <ol class="demo-trail" data-demo-trail aria-label="Simulation audit trail" aria-live="polite" aria-relevant="additions text">
+            <li data-demo-entry>Sample enquiry received (fictional).</li>
+          </ol>
+        </div>
       </div>
     </div>
   </section>
@@ -123,16 +129,37 @@
   var demo = document.querySelector('[data-demo-workflow]');
   if (!demo) return;
   var status = demo.querySelector('[data-demo-status]');
+  var trail = demo.querySelector('[data-demo-trail]');
+  var initialStatus = 'Waiting for a human decision.';
   var messages = {
-    approve: 'Simulation only — follow-up is ready for human review.',
-    reject: 'No message sent — a person declined the follow-up.',
-    failure: 'Simulated failure — no message sent; ask a person to review.',
-    reset: 'Waiting for a human decision.'
+    approve: {
+      status: 'Simulation only — follow-up is ready for human review.',
+      entry: 'Human approved preparing a follow-up. No message sent.'
+    },
+    reject: {
+      status: 'No message sent — a person declined the follow-up.',
+      entry: 'Human declined the follow-up. No message sent.'
+    },
+    failure: {
+      status: 'Simulated failure — no message sent; ask a person to review.',
+      entry: 'Simulated failure detected. Work paused for human review; no message sent.'
+    }
   };
   demo.addEventListener('click', function (event) {
     var button = event.target.closest('button[data-demo-action]');
-    if (!button || !Object.prototype.hasOwnProperty.call(messages, button.dataset.demoAction)) return;
-    status.textContent = messages[button.dataset.demoAction];
+    if (!button) return;
+    var action = button.dataset.demoAction;
+    if (action === 'reset') {
+      while (trail.children.length > 1) trail.removeChild(trail.lastElementChild);
+      status.textContent = initialStatus;
+      return;
+    }
+    if (!Object.prototype.hasOwnProperty.call(messages, action)) return;
+    status.textContent = messages[action].status;
+    var entry = document.createElement('li');
+    entry.setAttribute('data-demo-entry', '');
+    entry.textContent = messages[action].entry;
+    trail.appendChild(entry);
   });
 })();
 </script>
