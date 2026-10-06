@@ -37,7 +37,8 @@
 <nav aria-label="Main navigation">
   <div class="wrap nav">
     <a class="brand" href="./" aria-label="AIH home"><span class="mark">AI</span><span>H</span></a>
-    <div class="nav-links">
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-links">Menu</button>
+    <div class="nav-links" id="primary-links">
       <a href="#work">What I build</a>
       <a href="delivery.html">Delivery standards</a>
       <a href="blog/index.html">Field notes</a>
@@ -101,15 +102,49 @@
     </div>
   </section>
 
-  <section class="investment-section">
-    <div class="wrap investment-grid">
-      <div><span class="eyebrow">Clear starting points</span><h2>Know the ballpark<br><span class="accent">before the build.</span></h2><p class="sub">Indicative ranges from the AIH project offer. Final scope and price depend on the workflow, integrations and support needed.</p></div>
-      <div class="investment-list">
-        <div class="investment-row"><span>Starter · 1–2 core automations</span><b>$1k–$3.5k</b><small>one-time</small></div>
-        <div class="investment-row"><span>Growth · workflow + managed support</span><b>$3k–$15k</b><small>build, then $500–$2k/mo</small></div>
-        <div class="investment-row"><span>Enterprise · custom multi-agent system</span><b>$15k–$50k+</b><small>scoped proposal</small></div>
-        <p class="investment-note">No online checkout or subscription plans. Projects are scoped directly with you.</p>
+  <section class="investment-section" aria-labelledby="investment-title">
+    <div class="wrap">
+      <div class="offer-intro">
+        <span class="eyebrow">Clear starting points</span>
+        <h2 id="investment-title">Choose the right<br><span class="accent">starting point.</span></h2>
+        <p class="sub">Start with the size of the workflow—not a technology package. These are indicative ranges; the actual scope and price depend on your process, integrations and support needs.</p>
       </div>
+      <div class="offer-grid">
+        <article class="offer-card">
+          <span class="offer-kicker">ONE CLEAR BOTTLENECK</span>
+          <h3>Starter</h3>
+          <p class="offer-best">Best when one or two repetitive tasks are eating time.</p>
+          <dl class="offer-details">
+            <div><dt>Scope</dt><dd>1–2 core automations</dd></div>
+            <div><dt>Engagement</dt><dd>One-time, scoped project</dd></div>
+            <div><dt>Indicative range</dt><dd class="offer-price">$1k–$3.5k</dd></div>
+          </dl>
+          <a class="btn offer-cta" href="#contact" data-aih-cta="offer_starter">Discuss a Starter project <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="offer-card">
+          <span class="offer-kicker">CONNECTED WORKFLOW</span>
+          <h3>Growth</h3>
+          <p class="offer-best">Best when several steps or handoffs need to work together.</p>
+          <dl class="offer-details">
+            <div><dt>Scope</dt><dd>Full workflow + managed support</dd></div>
+            <div><dt>Engagement</dt><dd>Build, then ongoing support</dd></div>
+            <div><dt>Indicative range</dt><dd class="offer-price">$3k–$15k <small>build</small></dd><dd class="offer-secondary">then $500–$2k/mo managed support</dd></div>
+          </dl>
+          <a class="btn offer-cta" href="#contact" data-aih-cta="offer_growth">Explore a Growth build <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="offer-card">
+          <span class="offer-kicker">CUSTOM SCOPE</span>
+          <h3>Enterprise</h3>
+          <p class="offer-best">Best when the job spans multiple workflows, systems or teams.</p>
+          <dl class="offer-details">
+            <div><dt>Scope</dt><dd>Custom system, defined together</dd></div>
+            <div><dt>Engagement</dt><dd>Scoped proposal before build</dd></div>
+            <div><dt>Indicative range</dt><dd class="offer-price">$15k–$50k+</dd></div>
+          </dl>
+          <a class="btn offer-cta" href="#contact" data-aih-cta="offer_enterprise">Discuss a custom scope <span aria-hidden="true">→</span></a>
+        </article>
+      </div>
+      <p class="investment-note">Not sure which fits? Start with a free 30-minute audit. We’ll map one workflow and agree a sensible next step. No online checkout or subscription plans.</p>
     </div>
   </section>
 
@@ -154,6 +189,33 @@
   </div>
 </footer>
 
+<script>
+  (() => {
+    const toggle = document.querySelector('.nav-toggle');
+    const links = document.querySelector('#primary-links');
+    if (!toggle || !links) return;
+
+    const closeMenu = () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      links.classList.remove('is-open');
+    };
+
+    toggle.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+      links.classList.toggle('is-open', !isOpen);
+    });
+    links.addEventListener('click', event => {
+      if (event.target.closest('a')) closeMenu();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        closeMenu();
+        toggle.focus();
+      }
+    });
+  })();
+</script>
 <script src="bg.js"></script>
 <script>
   // Formspree Ajax integration for the AIH lead form.
