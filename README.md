@@ -1,19 +1,19 @@
 # Artificial Intelligence Hub (AIH)
 
-🤖 The one-stop shop for artificial intelligence, autonomous agents, tools, news, and related services & products.
+Practical AI automation for small businesses: lead follow-up, appointments, invoice/admin workflows, and custom agent systems. Projects are scoped around a real process, tested before handoff, and delivered with maintainability in mind.
 
 Live at: **https://jonnysteedman683-wq.github.io/AIH/**
 
-## Sections
-- **Services** — AI automation agency, agent development, consulting
-- **Tools & Products** — free / pro / agency tiers
-- **News & Insights** — build-in-public and AI field notes
-- **Get Started** — lead + newsletter capture form
+## Homepage
+- **What I build** — lead follow-up, appointment workflows, invoice and intake automation
+- **How it works** — free audit, scoped proposal, build/test/handoff
+- **Indicative project ranges** — $1k–$3.5k starter, $3k–$15k growth build, $15k–$50k+ enterprise; managed support is scoped separately
+- **Field notes** — build-in-public posts and grounded AI/agent practice
+- **Get a free audit** — homepage contact form for Jonny; no online subscription checkout is offered
+- **Blog newsletter** — separate signup remains available on `blog/index.html`
 
-## Automate the lead form
-Form is client-side. To capture leads by email, get a free endpoint at
-[formspree.io](https://formspree.io) (or formsubmit.co) and paste it into the
-`formspreeUrl` variable in `index.html`.
+## Lead form
+The homepage form is wired to Formspree Ajax using form ID `meaeoeav` and the `@formspree/ajax` CDN. Confirm the Formspree endpoint/account configuration before changing or testing submissions. Do not submit a test lead without approval. Analytics records only form interaction events; it must never read or transmit field values.
 
 ## Discoverability & sharing (build_seo.py)
 Every page carries a managed SEO/social block (canonical, Open Graph, Twitter

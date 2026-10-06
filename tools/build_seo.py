@@ -75,7 +75,7 @@ def meta_block(rel, title, desc, is_article):
             '{'
             '"@type":"Organization","@id":"%s/#org","name":"%s",'
             '"url":"%s/","logo":"%s/og.png",'
-            '"description":"The one-stop shop for AI models, autonomous agents, tools, news, and related services and products.",'
+            '"description":"Practical AI automations for lead follow-up, appointments and admin, scoped and verified by Jonny Steedman.",'
             '"founder":{"@type":"Person","name":"Jonny Steedman"}'
             '},'
             '{'

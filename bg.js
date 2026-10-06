@@ -6,6 +6,9 @@
   if(!canvas) return;
   var ctx = canvas.getContext('2d');
   var W, H, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var motionQuery = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  var reducedMotion = !!(motionQuery && motionQuery.matches);
+  var frameId = 0;
 
   function resize(){
     W = window.innerWidth; H = window.innerHeight;
@@ -13,8 +16,18 @@
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
+  function applyMotionPreference(){
+    reducedMotion = !!(motionQuery && motionQuery.matches);
+    if(reducedMotion && frameId) cancelAnimationFrame(frameId);
+    frameId = 0;
+    if(!reducedMotion) frameId = requestAnimationFrame(draw);
+  }
   resize();
   window.addEventListener('resize', resize);
+  if(motionQuery){
+    if(motionQuery.addEventListener) motionQuery.addEventListener('change', applyMotionPreference);
+    else if(motionQuery.addListener) motionQuery.addListener(applyMotionPreference);
+  }
 
   // Three hexagons: red, blue, green. Each drifts slowly and pulses.
   var hexes = [
@@ -79,7 +92,11 @@
       ctx.beginPath(); ctx.arc(x,y,waveR,0,Math.PI*2); ctx.fill();
     }
 
-    requestAnimationFrame(draw);
+    if(!reducedMotion) frameId = requestAnimationFrame(draw);
   }
-  draw();
+  if(!reducedMotion){
+    draw();
+  }else{
+    ctx.clearRect(0,0,W,H);
+  }
 })();
