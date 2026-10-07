@@ -1,11 +1,11 @@
 {
-  "generated": "2026-10-06T22:52:39Z",
-  "records": 54,
-  "sessions": 25,
+  "generated": "2026-10-07T02:03:24Z",
+  "records": 55,
+  "sessions": 26,
   "first_record": 1791285768508,
-  "last_record": 1791317063913,
+  "last_record": 1791336399816,
   "events": {
-    "pageview": 25,
+    "pageview": 26,
     "time_on_page": 21,
     "scroll_25": 3,
     "scroll_50": 2,
@@ -13,7 +13,7 @@
     "scroll_100": 1
   },
   "funnel": {
-    "view": 25,
+    "view": 26,
     "cta": 0,
     "start": 0,
     "submit": 0,
@@ -33,6 +33,15 @@
       "leads": 0,
       "sessions": 24,
       "events": 53
+    },
+    {
+      "date": "2026-10-07",
+      "pageviews": 1,
+      "cta_clicks": 0,
+      "form_starts": 0,
+      "leads": 0,
+      "sessions": 1,
+      "events": 1
     },
     {
       "date": "unknown",
@@ -64,13 +73,17 @@
     {
       "path": "/probe",
       "count": 1
+    },
+    {
+      "path": "/C:/Users/jonny/OneDrive/Desktop/AIH/workflow-example.html",
+      "count": 1
     }
   ],
   "ctas": [],
   "referrers": [
     {
       "host": "(direct)",
-      "count": 25
+      "count": 26
     }
   ],
   "viewports": [
@@ -81,6 +94,10 @@
     {
       "vp": "phone",
       "count": 2
+    },
+    {
+      "vp": "tablet",
+      "count": 1
     }
   ],
   "outbound": []
